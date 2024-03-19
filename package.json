@@ -1,12 +1,21 @@
 {
   "name": "gantt-resource-allocator",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "files": ["dist"],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/gantt-resource-allocator-lib.js",
+      "require": "./dist/gantt-resource-allocator-lib.umd.cjs"
+    },
+    "./style.css": "./dist/style.css"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc && vite build",
-    "preview": "vite preview"
+    "build": "vite build && vue-tsc --emitDeclarationOnly",
+    "types": "vue-tsc "
   },
   "dependencies": {
     "vue": "^3.4.21"
