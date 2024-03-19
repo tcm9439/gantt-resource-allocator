@@ -1,4 +1,7 @@
 import ResourceResourceAllocator from '~/components/allocator.vue'
-// TODO export composables
+import { Resource } from '~/composables/resource'
+import { Allocation } from '~/composables/allocation'
+import { AllocationElementColor } from '~/composables/allocationElementColor'
+import { TimeRange } from '~/composables/util/timeRange'
 
-export { ResourceResourceAllocator }
+export { Resource, Allocation, AllocationElementColor, TimeRange,  ResourceResourceAllocator }
