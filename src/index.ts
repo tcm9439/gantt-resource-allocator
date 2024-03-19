@@ -1,3 +1,4 @@
-import Demo from "./components/demo.vue"
+import ResourceResourceAllocator from '~/components/allocator.vue'
+// TODO export composables
 
-export { Demo }
+export { ResourceResourceAllocator }

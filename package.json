@@ -2,7 +2,9 @@
   "name": "gantt-resource-allocator",
   "private": true,
   "version": "0.1.0",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -14,11 +16,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && vue-tsc --emitDeclarationOnly",
-    "types": "vue-tsc "
+    "build": "vite build && vue-tsc --emitDeclarationOnly --project tsconfig-build.json"
   },
   "dependencies": {
-    "vue": "^3.4.21"
+    "@imengyu/vue3-context-menu": "^1.3.9",
+    "vue": "^3.4.21",
+    "vue3-draggable-resizable": "^1.6.5"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",

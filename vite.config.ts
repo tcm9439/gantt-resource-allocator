@@ -8,20 +8,29 @@ export default defineConfig({
     lib: {
       entry: "./src/index.ts",
       name: "GanttResourceAllocator",
-      // the name of the output files when the build is run
       fileName: "gantt-resource-allocator-lib",
     },
     rollupOptions: {
-      // make sure to externalize deps that shouldn't be bundled
-      // into your library
-      external: ["vue"],
+      // make sure to externalize deps that shouldn't be bundled into your library
+      external: [ 
+        "vue",
+        "@imengyu/vue3-context-menu",
+        "vue3-draggable-resizable",
+    ],
       output: {
-        // Provide global variables to use in the UMD build
-        // for externalized deps
+        // Provide global variables to use in the UMD build for externalized deps
         globals: {
           vue: "Vue",
         },
       },
     },
   },
+  resolve: {
+    alias: {
+        "~": "/src",
+        "assets": "/assets",
+        "public": "/public",
+        "#components": "/components"
+    }
+  }
 })
