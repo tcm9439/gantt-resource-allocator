@@ -48,7 +48,7 @@ let infoY = computed(() => {
     width: 150px;
     background-color: rgba(211, 211, 211, 0.7);
     text-align: center;
-    z-index: 50;
+    z-index: 8;
     border-radius: 5px;
 }
 </style>

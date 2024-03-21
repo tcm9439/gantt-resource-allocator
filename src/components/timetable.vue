@@ -147,7 +147,7 @@ table, td {
     height: 30px;
     position: sticky;
     top: 0;
-    z-index: 25;
+    z-index: 11;
     line-height: 30px;
 }
 
@@ -159,7 +159,7 @@ table, td {
     height: 30px;
     position: sticky;
     top: 30px;
-    z-index: 25;
+    z-index: 11;
     width: 120px;
     line-height: 30px;
 }
@@ -170,7 +170,7 @@ table, td {
     line-height: 20px;
     position: sticky;
     top: 60px;
-    z-index: 25;
+    z-index: 11;
 }
 
 .main-lat-header {
@@ -182,7 +182,7 @@ table, td {
 .col-resource-header {
     position: sticky;
     left: 0px;
-    z-index: 20;
+    z-index: 10;
 }
 
 .resource-row {

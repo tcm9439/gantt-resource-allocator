@@ -6,6 +6,7 @@ import { DraggableContainer } from 'vue3-draggable-resizable'
 
 import AllocationElement from '~/components/allocation.vue'
 import TimetableElement from '~/components/timetable.vue'
+import NowLine from '~/components/now_line.vue'
 
 import { Allocation } from '~/composables/allocation.ts'
 import { AllocTimeTable } from '~/composables/allocationTimeTable.ts'
@@ -19,6 +20,7 @@ export interface SacProps {
     headerColor?: string,
     headerTextColor?: string,
     tableHeight?: string,
+    currentTimelineColor?: string,
     allocationValidationCallback?: (alloc: Allocation) => boolean,
 }
 
@@ -27,6 +29,7 @@ const props = withDefaults(defineProps<SacProps>(), {
     headerColor: "#987544",
     headerTextColor: "white",
     tableHeight: "800px",
+    currentTimelineColor: "red",
     allocationValidationCallback: (_alloc: Allocation) => true,
 })
 
@@ -41,10 +44,12 @@ const emit = defineEmits<{
 const allocTimeTable = ref(new AllocTimeTable(props.timetableStartTime, props.timetableEndTime, resources.value))
 const activeRow = ref(-1)
 const reRenderAllocCount = ref(0)
+const reRenderNowLineCount = ref(0)
 const reRenderTimeTableCount = ref(0)
 
 function reRenderAlloc() {
     reRenderAllocCount.value++
+    reRenderNowLineCount.value++
 }
 
 function getTableHeightStyle() {
@@ -55,6 +60,7 @@ function getTableHeightStyle() {
 
 function windowResizeHandler() {
     reRenderTimeTableCount.value++
+    reRenderNowLineCount.value++
 }
 
 onMounted(() => {
@@ -69,6 +75,12 @@ onUnmounted(() => {
 <template>
     <div class="table-warper" :style="getTableHeightStyle()">
         <DraggableContainer :referenceLineVisible="false">
+            <NowLine 
+                :key="'now' + reRenderNowLineCount"
+                :allocTimeTable="allocTimeTable"
+                :timeline-color="props.currentTimelineColor"
+            />
+
             <TimetableElement 
                 class="timetable"
                 :reloadPosition="reRenderTimeTableCount"

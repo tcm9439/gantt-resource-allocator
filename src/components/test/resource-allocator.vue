@@ -32,19 +32,26 @@ const laterals: Ref<Array<Resource>> = ref([
     new Resource("23", "23A"),
 ])
 
+function getDateTime(dayOffset: number, hour: number, minute: number): Date {
+    const date = new Date()
+    date.setDate(date.getDate() + dayOffset)
+    date.setHours(hour, minute, 0, 0)
+    return date
+}
+
 const allocations: Ref<Array<Allocation>> = ref([
-    new Allocation("1", "Example 1", new TimeRange(new Date(2024, 1, 14, 23, 15), new Date(2024, 1, 15, 1, 45)), laterals.value[0], AllocationElementColor.ORANGE),
-    new Allocation("2", "Example 2", new TimeRange(new Date(2024, 1, 15, 3, 20), new Date(2024, 1, 15, 4, 30)), laterals.value[1], AllocationElementColor.BLUE),
-    new Allocation("3", "Example 3", new TimeRange(new Date(2024, 1, 15, 14, 40), new Date(2024, 1, 15, 16, 40)), laterals.value[2], AllocationElementColor.YELLOW),
-    new Allocation("4", "Example 4", new TimeRange(new Date(2024, 1, 15, 8, 30), new Date(2024, 1, 15, 9, 35)), laterals.value[3], AllocationElementColor.PURPLE),
-    new Allocation("5", "Example 5", new TimeRange(new Date(2024, 1, 15, 17, 20), new Date(2024, 1, 15, 18, 45)), laterals.value[4], AllocationElementColor.ORANGE),
-    new Allocation("6", "Example 6", new TimeRange(new Date(2024, 1, 15, 9, 30), new Date(2024, 1, 15, 11, 15)), laterals.value[5], AllocationElementColor.RED),
-    new Allocation("7", "Example 7", new TimeRange(new Date(2024, 1, 15, 2, 10), new Date(2024, 1, 15, 3, 20)), laterals.value[6], AllocationElementColor.ORANGE),   
-    new Allocation("8", "Example 8", new TimeRange(new Date(2024, 1, 15, 9, 20), new Date(2024, 1, 15, 10, 25)), laterals.value[7], AllocationElementColor.BLUE),
+    new Allocation("1", "Example 1", new TimeRange(getDateTime(-1, 23, 15), getDateTime(0, 1, 45)), laterals.value[0], AllocationElementColor.ORANGE),
+    new Allocation("2", "Example 2", new TimeRange(getDateTime(0, 3, 20), getDateTime(0, 4, 30)), laterals.value[1], AllocationElementColor.BLUE),
+    new Allocation("3", "Example 3", new TimeRange(getDateTime(0, 14, 40), getDateTime(0, 16, 40)), laterals.value[2], AllocationElementColor.YELLOW),
+    new Allocation("4", "Example 4", new TimeRange(getDateTime(0, 8, 30), getDateTime(0, 9, 35)), laterals.value[3], AllocationElementColor.PURPLE),
+    new Allocation("5", "Example 5", new TimeRange(getDateTime(0, 17, 20), getDateTime(0, 18, 45)), laterals.value[4], AllocationElementColor.ORANGE),
+    new Allocation("6", "Example 6", new TimeRange(getDateTime(0, 9, 30), getDateTime(0, 11, 15)), laterals.value[5], AllocationElementColor.RED),
+    new Allocation("7", "Example 7", new TimeRange(getDateTime(0, 2, 10), getDateTime(0, 3, 20)), laterals.value[6], AllocationElementColor.ORANGE),
+    new Allocation("8", "Example 8", new TimeRange(getDateTime(0, 9, 20), getDateTime(0, 10, 25)), laterals.value[7], AllocationElementColor.BLUE),
 ])
 
-const allocTimeTableStartTime = new Date(2024, 1, 14, 23, 0)
-const allocTimeTableEndTime = new Date(2024, 1, 16, 1, 0)
+const allocTimeTableStartTime = getDateTime(-1, 23, 0)
+const allocTimeTableEndTime = getDateTime(1, 1, 0)
 const minAllocMinutes = 60
 const maxAllocMinutes = 180
 
@@ -92,8 +99,8 @@ function doCancel() {
 
 function allocValidation(alloc: Allocation): boolean {
     if (alloc.id == "1"){
-        // start time cannot after Date(2024, 1, 15, 2, 15)
-        if (alloc.time.start.getTime() > new Date(2024, 1, 15, 2, 15).getTime()) {
+        // dummy constraint: start time cannot after some date
+        if (alloc.time.start.getTime() > getDateTime(0, 2, 15).getTime()) {
             console.log("Validation failed")
             return false
         }

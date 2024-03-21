@@ -75,8 +75,8 @@ export class AllocTimeTable {
     public maxX: number = 0
     public maxY: number = 0
 
-    public colOffset: number = 0
-    public rowOffset: number = 0
+    public colOffset: number = 0    // x offset due to header
+    public rowOffset: number = 0    // y offset due to header
     public rowPaddingOffset: number = 0
     
     public colWidth: number = 0

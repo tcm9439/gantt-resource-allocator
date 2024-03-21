@@ -17,10 +17,10 @@ export class AllocationPosition {
      * @param cellRefList 
      * @returns 
      */
-    calculatePosition(alloc: Allocation, AllocTimeTable: AllocTimeTable) {
-        this.position.x = AllocTimeTable.getCellX(alloc.time.start)
-        this.position.y = AllocTimeTable.getCellY(this.row)
-        let endX = AllocTimeTable.getCellX(alloc.time.end)
+    calculatePosition(alloc: Allocation, allocTimeTable: AllocTimeTable) {
+        this.position.x = allocTimeTable.getCellX(alloc.time.start)
+        this.position.y = allocTimeTable.getCellY(this.row)
+        let endX = allocTimeTable.getCellX(alloc.time.end)
         this.width = endX - this.position.x
     }
 
