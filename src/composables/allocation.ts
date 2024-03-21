@@ -10,6 +10,7 @@ export class Allocation {
     public allowCollide: boolean = false
     public color: AllocationElementColor
     public collisionCount: number = 0
+    public valid: boolean = true
     
     constructor(id: string, name: string, time?: TimeRange, resource?: Resource, color?: AllocationElementColor) {
         this.id = id

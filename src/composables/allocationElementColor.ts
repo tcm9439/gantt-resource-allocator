@@ -10,43 +10,58 @@ export enum AllocationElementColor {
 type AllocationColorStyle = {
     "background-color": string
     "border-color": string
+    "color": string
 }
 
 const allocationColorList: Map<AllocationElementColor, AllocationColorStyle> = new Map([
     [AllocationElementColor.ORANGE, {
         "background-color": "#FCE6CC",
-        "border-color": "#CC9100"
+        "border-color": "#CC9100",
+        "color": "black",
     }],
     [AllocationElementColor.RED, {
         "background-color": "#F4CECC",
-        "border-color": "#B15854"
+        "border-color": "#B15854",
+        "color": "black",
     }],
     [AllocationElementColor.YELLOW, {
         "background-color": "#FDF1CC",
-        "border-color": "#D2BB72"
+        "border-color": "#D2BB72",
+        "color": "black",
     }],
     [AllocationElementColor.BLUE, {
         "background-color": "#DCE8FC",
-        "border-color": "#7390C0"
+        "border-color": "#7390C0",
+        "color": "black",
     }],
     [AllocationElementColor.GREEN, {
         "background-color": "#D7E8D4",
-        "border-color": "#A9CFB8"
+        "border-color": "#A9CFB8",
+        "color": "black",
     }],
     [AllocationElementColor.PURPLE, {
         "background-color": "#E0D5E7",
-        "border-color": "#8D6CA1"
+        "border-color": "#8D6CA1",
+        "color": "black",
     }],
 ])
 
-export function getAllocationResizableBoxStyle(hasCollision: boolean, color: AllocationElementColor): any {
-    let style: any = allocationColorList.get(color)
+function copyStyle(style: AllocationColorStyle): AllocationColorStyle {
+    return {
+        "background-color": style["background-color"],
+        "border-color": style["border-color"],
+        "color": style["color"],
+    }
+}
+
+export function getAllocationResizableBoxStyle(hasCollision: boolean, isValid: boolean, color: AllocationElementColor): any {
+    let style: any = copyStyle(allocationColorList.get(color) as AllocationColorStyle)
     if (hasCollision) {
-        return {
-            "background-color": style["background-color"],
-            "border-color": style["border-color"],
-            "background": `repeating-linear-gradient( 45deg, ${style["border-color"]}, ${style["border-color"]} 1px, ${style["background-color"]} 2px, ${style["background-color"]} 30px )`
-        }
+        style['background'] = `repeating-linear-gradient( 45deg, ${style["border-color"]}, ${style["border-color"]} 1px, ${style["background-color"]} 2px, ${style["background-color"]} 30px )`
+    }
+    if (!isValid) {
+        style['color'] = 'red'
+        style['font-weight'] = 'bold'
     }
     return style
 }

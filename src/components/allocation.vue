@@ -14,6 +14,7 @@ let props = defineProps<{
     allocTimeTable: AllocTimeTable
     minAllocMinutes: number,
     maxAllocMinutes: number,
+    allocationValidationCallback: (alloc: Allocation) => boolean,
 }>()
 
 const alloc = defineModel("alloc", { required: true, type: Allocation })
@@ -37,6 +38,9 @@ const wMiddleStateValue = ref(allocPos.value.width)
 
 const hasCollision = computed(() => {
     return alloc.value.hasCollision
+})
+const isValid = computed(() => {
+    return alloc.value.valid
 })
 
 const xBoundToMovable = computed({
@@ -71,9 +75,9 @@ const width = computed({
 
 let posBeforeEdit = allocPos.value.copy()
 
-const allocBoxStyle = ref(getAllocationResizableBoxStyle(hasCollision.value, alloc.value.color))
-watch(hasCollision, () => {
-    allocBoxStyle.value = getAllocationResizableBoxStyle(hasCollision.value, alloc.value.color)
+const allocBoxStyle = ref(getAllocationResizableBoxStyle(hasCollision.value, isValid.value, alloc.value.color))
+watch([hasCollision, isValid], () => {
+    allocBoxStyle.value = getAllocationResizableBoxStyle(hasCollision.value, isValid.value, alloc.value.color)
 })
 
 // ===== Helper function =====
@@ -111,6 +115,14 @@ function validateChange() {
         }
     }
 
+    // validation callback
+    let isValidMove = props.allocationValidationCallback(alloc.value)
+    alloc.value.valid = isValidMove
+    // if (!isValidMove) {
+    //     // revert to previous position
+    //     allocPos.value = posBeforeEdit
+    // }
+
     forceReloadPos()
 }
 
@@ -143,7 +155,6 @@ function onDragging() {
 
 function onDragEnd() {
     validateChange()
-    console.log('onDragEnd', alloc.value.resource?.collisions, alloc.value.hasCollision)
     showInfoBox.value = true
 }
 

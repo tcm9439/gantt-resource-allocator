@@ -89,6 +89,17 @@ function doCancel() {
     editingAlloc.value = null
     editingAllocName.value = ""
 }
+
+function allocValidation(alloc: Allocation): boolean {
+    if (alloc.id == "1"){
+        // start time cannot after Date(2024, 1, 15, 2, 15)
+        if (alloc.time.start.getTime() > new Date(2024, 1, 15, 2, 15).getTime()) {
+            console.log("Validation failed")
+            return false
+        }
+    }
+    return true
+}
 </script>
 
 <template>
@@ -102,6 +113,7 @@ function doCancel() {
         :minAllocMinutes="minAllocMinutes" 
         :maxAllocMinutes="maxAllocMinutes"
         tableHeight="70vh"
+        :allocationValidationCallback="allocValidation"
         @delete="onDelete"
         @edit="onEdit"
     />

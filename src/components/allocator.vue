@@ -19,12 +19,15 @@ export interface SacProps {
     headerColor?: string,
     headerTextColor?: string,
     tableHeight?: string,
+    allocationValidationCallback?: (alloc: Allocation) => boolean,
 }
 
+// optional properties default values
 const props = withDefaults(defineProps<SacProps>(), {
     headerColor: "#987544",
     headerTextColor: "white",
     tableHeight: "800px",
+    allocationValidationCallback: (_alloc: Allocation) => true,
 })
 
 const resources = defineModel("resources", { required: true, type: Array<Resource> })
@@ -86,6 +89,7 @@ onUnmounted(() => {
                     :minAllocMinutes="minAllocMinutes"
                     :maxAllocMinutes="maxAllocMinutes"
                     v-model:activeRow="activeRow" 
+                    :allocationValidationCallback="props.allocationValidationCallback"
                     @delete="(allocToDelete) => emit('delete', allocToDelete)"
                     @edit="(allocToEdit) => emit('edit', allocToEdit)"
                 />
