@@ -36,6 +36,11 @@ export class Resource {
     }
 
     addAllocation(alloc: Allocation) {
+        // if alloc is already in the list, then we can skip the collision check
+        if (this.allocations.indexOf(alloc) !== -1) {
+            return
+        }
+        
         // compute all collisions
         for (let i = 0; i < this.allocations.length; i++) {
             if (this.allocations && alloc.allowCollide && this.allocations[i].allowCollide) {

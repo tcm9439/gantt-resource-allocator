@@ -43,18 +43,57 @@ const allocations: Ref<Array<Allocation>> = ref([
     new Allocation("8", "Example 8", new TimeRange(new Date(2024, 1, 15, 9, 20), new Date(2024, 1, 15, 10, 25)), laterals.value[7], AllocationElementColor.BLUE),
 ])
 
-for (let alloc of allocations.value) {
-    alloc.resource?.allocations.push(alloc)
-}
-
 const allocTimeTableStartTime = new Date(2024, 1, 14, 23, 0)
 const allocTimeTableEndTime = new Date(2024, 1, 16, 1, 0)
 const minAllocMinutes = 60
 const maxAllocMinutes = 180
+
+const editMode = ref(0) // 0: nothing, 1: confirm delete, 2: editing
+const editingAlloc = ref<Allocation | null>(null)
+const editingAllocName = ref("")
+function onDelete(alloc: Allocation) {
+    console.log("Delete", alloc)
+    editMode.value = 1
+    editingAlloc.value = alloc
+}
+
+function doDelete() {
+    if (editingAlloc.value == null) {
+        return
+    }
+    console.log("Do delete", editingAlloc.value)
+    editingAlloc.value.resource?.removeAllocation(editingAlloc.value)
+    allocations.value.splice(allocations.value.indexOf(editingAlloc.value), 1)
+    doCancel()
+}
+
+function onEdit(alloc: Allocation) {
+    console.log("Edit", alloc)
+    editingAlloc.value = alloc
+    editingAllocName.value = alloc.name
+    editMode.value = 2
+}
+
+function doUpdate() {
+    if (editingAlloc.value == null) {
+        return
+    }
+    console.log("Do update", editingAlloc.value)
+    editingAlloc.value.name = editingAllocName.value
+    doCancel()
+}
+
+function doCancel() {
+    console.log("Cancel")
+    editMode.value = 0
+    editingAlloc.value = null
+    editingAllocName.value = ""
+}
 </script>
 
 <template>
     <h1>TESTING PAGE</h1>
+    <div class="table-wrapper">
     <ResourceResourceAllocator 
         :resources="laterals" 
         :allocations="allocations" 
@@ -62,15 +101,30 @@ const maxAllocMinutes = 180
         :timetableEndTime="allocTimeTableEndTime" 
         :minAllocMinutes="minAllocMinutes" 
         :maxAllocMinutes="maxAllocMinutes"
-        tableHeight="800px"
+        tableHeight="70vh"
+        @delete="onDelete"
+        @edit="onEdit"
     />
-    <div class="text-area">
-        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+    </div>
+    <div style="margin: 20px">
+        <div v-if="editMode == 1">
+            <p>Are you sure you want to delete this allocation?</p>
+            <button @click="doDelete">Yes</button>
+            <button @click="doCancel">No</button>
+        </div>
+        <div v-else-if="editMode == 2">
+            <p>Editing allocation</p>
+            <input type="text" v-model="editingAllocName">
+            <button @click="doUpdate">Confirm</button>
+            <button @click="doCancel">Cancel</button>
+        </div>
     </div>
 </template>
 
 <style scoped>
-.text-area {
-    padding: 10px;
+.table-wrapper {
+    width: 90vw;
+    /* center the table */
+    margin: auto;
 }
 </style>

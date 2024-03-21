@@ -17,6 +17,8 @@ export class Allocation {
         this.time = time || new TimeRange(new Date(), new Date())
         this.resource = resource
         this.color = color || AllocationElementColor.ORANGE
+
+        this.resource?.addAllocation(this)
     }
 
     copy(): Allocation {

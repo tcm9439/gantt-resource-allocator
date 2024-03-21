@@ -19,6 +19,11 @@ let props = defineProps<{
 const alloc = defineModel("alloc", { required: true, type: Allocation })
 const activeRow = defineModel("activeRow", { required: true, type: Number })
 
+const emit = defineEmits<{
+    (e: 'delete', alloc: Allocation): void
+    (e: 'edit', alloc: Allocation): void
+}>()
+
 // ==== view data ====
 const showInfoBox = ref(false)
 
@@ -155,17 +160,13 @@ function onResizeEnd() {
     showInfoBox.value = true
 }
 
-// function deleteAlloc(){
-//     console.log('deleteAlloc')
-//     // delete the allocation
-//     // emit('delete', alloc)
-// }
+function deleteAlloc(){
+    emit('delete', alloc.value)
+}
 
-// function editAlloc(){
-//     console.log('editAlloc')
-//     // delete the allocation
-//     // emit('delete', alloc)
-// }
+function editAlloc(){
+    emit('edit', alloc.value)
+}
 
 function onContextMenu(e: MouseEvent) {
     //prevent the browser's default menu
@@ -178,13 +179,13 @@ function onContextMenu(e: MouseEvent) {
             { 
                 label: "Edit", 
                 onClick: () => {
-                    console.log("You click menu item 'edit'")
+                    editAlloc()
                 }
             },
             { 
                 label: "Delete", 
                 onClick: () => {
-                    console.log("You click menu item 'delete'")
+                    deleteAlloc()
                 }
             },
         ]

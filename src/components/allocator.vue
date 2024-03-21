@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css'
+
 import { ref, onMounted, onUnmounted } from 'vue'
 import { DraggableContainer } from 'vue3-draggable-resizable'
 
@@ -27,6 +29,11 @@ const props = withDefaults(defineProps<SacProps>(), {
 
 const resources = defineModel("resources", { required: true, type: Array<Resource> })
 const allocations = defineModel("allocations", { required: true, type: Array<Allocation> })
+
+const emit = defineEmits<{
+    (e: 'delete', alloc: Allocation): void
+    (e: 'edit', alloc: Allocation): void
+}>()
 
 const allocTimeTable = ref(new AllocTimeTable(props.timetableStartTime, props.timetableEndTime, resources.value))
 const activeRow = ref(-1)
@@ -73,11 +80,14 @@ onUnmounted(() => {
             <div :key="reRenderAllocCount">
                 <AllocationElement 
                     v-for="alloc in allocations" 
+                    :key="alloc.id"
                     :alloc="alloc" 
                     :allocTimeTable="allocTimeTable"
                     :minAllocMinutes="minAllocMinutes"
                     :maxAllocMinutes="maxAllocMinutes"
                     v-model:activeRow="activeRow" 
+                    @delete="(allocToDelete) => emit('delete', allocToDelete)"
+                    @edit="(allocToEdit) => emit('edit', allocToEdit)"
                 />
             </div>
         </DraggableContainer>
