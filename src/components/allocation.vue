@@ -80,6 +80,11 @@ watch([hasCollision, isValid], () => {
     allocBoxStyle.value = getAllocationResizableBoxStyle(hasCollision.value, isValid.value, alloc.value.color)
 })
 
+watch(() => alloc.value.time, () => {
+    allocPos.value.calculatePosition(alloc.value, props.allocTimeTable)
+    forceReloadPos()
+})
+
 // ===== Helper function =====
 function forceReloadPos() {
     xBoundToMovable.value = allocPos.value.position.x

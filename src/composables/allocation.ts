@@ -54,11 +54,20 @@ export class Allocation {
         return this.collisionCount > 0
     }
 
+    setTime(time: TimeRange) {
+        this.time = time
+    }
+
     addCollision() {
         this.collisionCount++
     }
 
     removeCollision() {
         this.collisionCount--
+    }
+
+    resetResource() {
+        this.resource?.removeAllocation(this)
+        this.resource = undefined
     }
 }
