@@ -11,7 +11,7 @@ let props = defineProps<{
 }>()
 
 const infoWidth = 150
-const infoYOffset = 60
+const infoYOffset = 30
 
 let infoX = computed(() => {
     let midInfoX = props.allocPos.position.x + props.allocPos.width / 2 - infoWidth / 2
@@ -24,8 +24,17 @@ let infoX = computed(() => {
         return midInfoX
     }
 })
+
 let infoY = computed(() => {
     return props.allocPos.position.y - infoYOffset
+})
+
+let startTimeDisplay = computed(() => {
+    return Allocation.toDisplayString(props.alloc.time.start)
+})
+
+let endTimeDisplay = computed(() => {
+    return Allocation.toDisplayString(props.alloc.time.end)
 })
 </script>
 
@@ -37,8 +46,7 @@ let infoY = computed(() => {
         :draggable="false"
         :resizable="false">
         <div>
-            Start Time: {{ alloc.getStartTimeDisplayString() }}<br />
-            End Time: {{ alloc.getEndTimeDisplayString() }}
+            {{ startTimeDisplay }} - {{ endTimeDisplay }}
         </div>
     </Vue3DraggableResizable>
 </template>
@@ -46,9 +54,9 @@ let infoY = computed(() => {
 <style scoped>
 .allocation-info-box {
     width: 150px;
-    background-color: rgba(211, 211, 211, 0.7);
+    background-color: rgba(211, 211, 211, 0.9);
     text-align: center;
-    z-index: 8;
+    z-index: 12;
     border-radius: 5px;
 }
 </style>

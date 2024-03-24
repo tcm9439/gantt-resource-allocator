@@ -93,8 +93,7 @@ export class AllocTimeTable {
     }
 
     _padLeadingZero(num: number): string {
-        let s = "0" + num;
-        return s.substring(s.length - 2);
+        return num < 10 ? `0${num}` : num.toString()
     }
 
     _toDateOnlyString(date: Date): string {

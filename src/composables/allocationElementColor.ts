@@ -47,19 +47,19 @@ const allocationColorList: Map<AllocationElementColor, AllocationColorStyle> = n
 ])
 
 function copyStyle(style: AllocationColorStyle): AllocationColorStyle {
-    return {
-        "background-color": style["background-color"],
-        "border-color": style["border-color"],
-        "color": style["color"],
-    }
+    return { ...style }
 }
 
 export function getAllocationResizableBoxStyle(hasCollision: boolean, isValid: boolean, color: AllocationElementColor): any {
     let style: any = copyStyle(allocationColorList.get(color) as AllocationColorStyle)
+
     if (hasCollision) {
+        // set striped background
         style['background'] = `repeating-linear-gradient( 45deg, ${style["border-color"]}, ${style["border-color"]} 1px, ${style["background-color"]} 2px, ${style["background-color"]} 30px )`
     }
+
     if (!isValid) {
+        // set alert style
         style['color'] = 'red'
         style['font-weight'] = 'bold'
     }

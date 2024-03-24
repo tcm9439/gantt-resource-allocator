@@ -6,7 +6,7 @@ import { Allocation } from '~/composables/allocation'
 import { AllocationElementColor } from '~/composables/allocationElementColor'
 import { TimeRange } from '~/composables/util/timeRange'
 
-const laterals: Ref<Array<Resource>> = ref([
+const laterals = ref([
     new Resource("1", "01A"),
     new Resource("2", "02A"),
     new Resource("3", "03A"),
@@ -30,7 +30,7 @@ const laterals: Ref<Array<Resource>> = ref([
     new Resource("21", "21A"),
     new Resource("22", "22A"),
     new Resource("23", "23A"),
-])
+]) as Ref<Array<Resource>>
 
 function getDateTime(dayOffset: number, hour: number, minute: number): Date {
     const date = new Date()
@@ -39,7 +39,7 @@ function getDateTime(dayOffset: number, hour: number, minute: number): Date {
     return date
 }
 
-const allocations: Ref<Array<Allocation>> = ref([
+const allocations = ref([
     new Allocation("1", "Example 1", new TimeRange(getDateTime(-1, 23, 15), getDateTime(0, 1, 45)), laterals.value[0], AllocationElementColor.ORANGE),
     new Allocation("2", "Example 2", new TimeRange(getDateTime(0, 3, 20), getDateTime(0, 4, 30)), laterals.value[1], AllocationElementColor.BLUE),
     new Allocation("3", "Example 3", new TimeRange(getDateTime(0, 14, 40), getDateTime(0, 16, 40)), laterals.value[2], AllocationElementColor.YELLOW),
@@ -48,7 +48,7 @@ const allocations: Ref<Array<Allocation>> = ref([
     new Allocation("6", "Example 6", new TimeRange(getDateTime(0, 9, 30), getDateTime(0, 11, 15)), laterals.value[5], AllocationElementColor.RED),
     new Allocation("7", "Example 7", new TimeRange(getDateTime(0, 2, 10), getDateTime(0, 3, 20)), laterals.value[6], AllocationElementColor.ORANGE),
     new Allocation("8", "Example 8", new TimeRange(getDateTime(0, 9, 20), getDateTime(0, 10, 25)), laterals.value[7], AllocationElementColor.BLUE),
-])
+]) as Ref<Array<Allocation>>
 
 const allocTimeTableStartTime = getDateTime(-1, 23, 0)
 const allocTimeTableEndTime = getDateTime(1, 1, 0)
@@ -56,8 +56,9 @@ const minAllocMinutes = 60
 const maxAllocMinutes = 180
 
 const editMode = ref(0) // 0: nothing, 1: confirm delete, 2: editing
-const editingAlloc = ref<Allocation | null>(null)
+const editingAlloc = ref(null) as Ref<Allocation | null>
 const editingAllocName = ref("")
+const editingAllocTime = ref("")
 function onDelete(alloc: Allocation) {
     console.log("Delete", alloc)
     editMode.value = 1
@@ -78,6 +79,8 @@ function onEdit(alloc: Allocation) {
     console.log("Edit", alloc)
     editingAlloc.value = alloc
     editingAllocName.value = alloc.name
+    // HH:MM format
+    editingAllocTime.value = `${alloc.time.start.getHours().toString().padStart(2, '0')}:${alloc.time.start.getMinutes().toString().padStart(2, '0')}`
     editMode.value = 2
 }
 
@@ -87,6 +90,11 @@ function doUpdate() {
     }
     console.log("Do update", editingAlloc.value)
     editingAlloc.value.name = editingAllocName.value
+
+    const timeParts = editingAllocTime.value.split(":")
+    const newStartTime = new Date(editingAlloc.value.time.start)
+    newStartTime.setHours(parseInt(timeParts[0]), parseInt(timeParts[1]))
+    editingAlloc.value.time.start = newStartTime
     doCancel()
 }
 
@@ -133,7 +141,10 @@ function allocValidation(alloc: Allocation): boolean {
         </div>
         <div v-else-if="editMode == 2">
             <p>Editing allocation</p>
+            <span>Name: </span>
             <input type="text" v-model="editingAllocName">
+            <span>Start time: </span>
+            <input type="text" v-model="editingAllocTime"/>
             <button @click="doUpdate">Confirm</button>
             <button @click="doCancel">Cancel</button>
         </div>

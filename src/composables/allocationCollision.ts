@@ -1,6 +1,5 @@
 import { Allocation } from './allocation'
 
-
 export class AllocationCollision {
     public allocationA: Allocation
     public allocationB: Allocation

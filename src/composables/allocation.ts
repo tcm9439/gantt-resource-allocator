@@ -3,21 +3,21 @@ import { TimeRange } from './util/timeRange'
 import { AllocationElementColor } from './allocationElementColor'
 
 export class Allocation {
-    public name: string
-    public id: string
-    public time: TimeRange
-    public resource: Resource | undefined
-    public allowCollide: boolean = false
-    public color: AllocationElementColor
-    public collisionCount: number = 0
-    public valid: boolean = true
+    private _name: string
+    private _id: string
+    private _time: TimeRange
+    private _resource: Resource | undefined
+    private _allowCollide: boolean = false
+    private _color: AllocationElementColor
+    private _collisionCount: number = 0
+    private _valid: boolean = true
     
     constructor(id: string, name: string, time?: TimeRange, resource?: Resource, color?: AllocationElementColor) {
-        this.id = id
-        this.name = name
-        this.time = time || new TimeRange(new Date(), new Date())
-        this.resource = resource
-        this.color = color || AllocationElementColor.ORANGE
+        this._id = id
+        this._name = name
+        this._time = time || new TimeRange(new Date(), new Date())
+        this._resource = resource
+        this._color = color || AllocationElementColor.ORANGE
 
         this.resource?.addAllocation(this)
     }
@@ -26,48 +26,74 @@ export class Allocation {
         return new Allocation(this.id, this.name, this.time?.copy(), this.resource, this.color)
     }
 
-    _padLeadingZero(num: number): string {
-        let s = "0" + num;
-        return s.substring(s.length - 2);
+    private static _padLeadingZero(num: number): string {
+        return num.toString().padStart(2, '0')
     }
 
-    _toDisplayString(time: Date){
+    public static toDisplayString(time: Date){
         // return HH:mm
         return this._padLeadingZero(time.getHours()) + ":" + this._padLeadingZero(time.getMinutes())
     }
 
-    getStartTimeDisplayString(): string {
-        if (this.time === undefined) {
-            return ''
+    public get hasCollision(): boolean {
+        return this._collisionCount > 0
+    }
+
+    public get allowCollide(): boolean {
+        return this._allowCollide
+    }
+
+    public addCollision() {
+        this._collisionCount++
+    }
+
+    public removeCollision() {
+        this._collisionCount--
+    }
+
+    public get resource(): Resource | undefined {
+        return this._resource
+    }
+
+    public set resource(value: Resource | null) {
+        if (this._resource) {
+            this._resource.removeAllocation(this)
         }
-        return this._toDisplayString(this.time.start)
-    }
-
-    getEndTimeDisplayString(): string {
-        if (this.time === undefined) {
-            return ''
+        if (value) {
+            value.addAllocation(this)
+            this._resource = value
         }
-        return this._toDisplayString(this.time.end)
+    }
+    
+    public get time(): TimeRange {
+        return this._time
     }
 
-    get hasCollision(): boolean {
-        return this.collisionCount > 0
+    public set time(value: TimeRange) {
+        this._time = value
     }
 
-    setTime(time: TimeRange) {
-        this.time = time
+    public get id(): string {
+        return this._id
     }
 
-    addCollision() {
-        this.collisionCount++
+    public get name(): string {
+        return this._name
     }
 
-    removeCollision() {
-        this.collisionCount--
+    public set name(value: string) {
+        this._name = value
     }
 
-    resetResource() {
-        this.resource?.removeAllocation(this)
-        this.resource = undefined
+    public get color(): AllocationElementColor {
+        return this._color
+    }
+
+    public get valid(): boolean {
+        return this._valid
+    }
+
+    public set valid(value: boolean) {
+        this._valid = value
     }
 }

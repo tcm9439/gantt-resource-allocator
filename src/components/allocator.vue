@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css'
 
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, Ref } from 'vue'
 import { DraggableContainer } from 'vue3-draggable-resizable'
 
 import AllocationElement from '~/components/allocation.vue'
@@ -41,7 +41,7 @@ const emit = defineEmits<{
     (e: 'edit', alloc: Allocation): void
 }>()
 
-const allocTimeTable = ref(new AllocTimeTable(props.timetableStartTime, props.timetableEndTime, resources.value))
+const allocTimeTable = ref(new AllocTimeTable(props.timetableStartTime, props.timetableEndTime, resources.value)) as Ref<AllocTimeTable>
 const activeRow = ref(-1)
 const reRenderAllocCount = ref(0)
 const reRenderNowLineCount = ref(0)

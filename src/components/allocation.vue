@@ -80,9 +80,13 @@ watch([hasCollision, isValid], () => {
     allocBoxStyle.value = getAllocationResizableBoxStyle(hasCollision.value, isValid.value, alloc.value.color)
 })
 
-watch(() => alloc.value.time, () => {
-    allocPos.value.calculatePosition(alloc.value, props.allocTimeTable)
-    forceReloadPos()
+watch([
+        () => alloc.value.time, 
+        () => alloc.value.time.start, 
+        () => alloc.value.time.end,
+    ], () => {
+        allocPos.value.calculatePosition(alloc.value, props.allocTimeTable)
+        forceReloadPos()
 })
 
 // ===== Helper function =====

@@ -42,9 +42,7 @@ export class AllocationPosition {
 
     relocatedToNearestGrid(alloc: Allocation, allocTimeTable: AllocTimeTable) {
         // calculate the new time according to the new position
-        console.trace('relocatedToNearestGrid - start time')
         alloc.time.start = allocTimeTable.getTimeFromPosition(this.position.x)
-        console.trace('relocatedToNearestGrid - end time')
         alloc.time.end = allocTimeTable.getTimeFromPosition(this.position.x + this.width)
         this.calculatePosition(alloc, allocTimeTable)
         alloc.resource?.removeAllocation(alloc)
