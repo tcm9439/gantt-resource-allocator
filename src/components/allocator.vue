@@ -3,6 +3,7 @@ import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css'
 
 import { ref, onMounted, onUnmounted, Ref } from 'vue'
 import { DraggableContainer } from 'vue3-draggable-resizable'
+import 'default-passive-events'
 
 import AllocationElement from '~/components/allocation.vue'
 import TimetableElement from '~/components/timetable.vue'
