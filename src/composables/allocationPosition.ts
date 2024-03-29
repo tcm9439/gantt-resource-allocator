@@ -56,5 +56,9 @@ export class AllocationPosition {
         copy.width = this.width
         return copy
     }
+
+    equals(other: AllocationPosition): boolean {
+        return this.row === other.row && this.position.equals(other.position) && this.width === other.width
+    }
 }
 

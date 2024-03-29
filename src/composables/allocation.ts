@@ -9,7 +9,7 @@ export class Allocation {
     private _resource: Resource | undefined
     private _allowCollide: boolean = false
     private _color: AllocationElementColor
-    private _collisionCount: number = 0
+    public collisionCount: number = 0       // pub for vue compute() reactivity
     private _valid: boolean = true
     
     constructor(id: string, name: string, time?: TimeRange, resource?: Resource, color?: AllocationElementColor) {
@@ -35,20 +35,16 @@ export class Allocation {
         return this._padLeadingZero(time.getHours()) + ":" + this._padLeadingZero(time.getMinutes())
     }
 
-    public get hasCollision(): boolean {
-        return this._collisionCount > 0
-    }
-
     public get allowCollide(): boolean {
         return this._allowCollide
     }
 
     public addCollision() {
-        this._collisionCount++
+        this.collisionCount++
     }
 
     public removeCollision() {
-        this._collisionCount--
+        this.collisionCount--
     }
 
     public get resource(): Resource | undefined {

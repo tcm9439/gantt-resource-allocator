@@ -10,4 +10,8 @@ export class ElementPosition {
     toString() {
         return `[x: ${Math.floor(this.x)}, y: ${Math.floor(this.y)}]`
     }
+
+    equals(other: ElementPosition): boolean {
+        return this.x === other.x && this.y === other.y
+    }
 }
