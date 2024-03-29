@@ -18,6 +18,7 @@ export default defineConfig({
         "vue",
         "@imengyu/vue3-context-menu",
         "vue3-draggable-resizable",
+        "default-passive-events",
       ],
       output: {
         // Provide global variables to use in the UMD build for externalized deps
