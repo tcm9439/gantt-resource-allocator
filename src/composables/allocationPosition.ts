@@ -2,7 +2,6 @@ import { AllocTimeTable } from './allocationTimeTable'
 import { ElementPosition } from './util/elementPosition'
 import { Allocation } from './allocation'
 
-
 export class AllocationPosition {
     public row: number
     public position: ElementPosition = new ElementPosition()

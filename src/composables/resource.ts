@@ -2,47 +2,19 @@ import { AllocationCollision } from './allocationCollision'
 import { Allocation } from './allocation'
 
 export class Resource {
-    private _id: string
-    private _name: string
-    private _allocations: Allocation[] = []
-    private _collisions: AllocationCollision[] = []
-    private _bufferMinutes: number = 0
-    private _allowCollision: boolean = false
+    public id: string
+    public name: string
+    public allocations: Allocation[] = []
+    public collisions: AllocationCollision[] = []
+    public bufferMinutes: number = 0
+    public allowCollision: boolean = false
 
     constructor(id: string, name: string, bufferMinutes: number = 0, allowCollision: boolean = false, allocations: Allocation[] = []) {
-        this._id = id
-        this._name = name
-        this._bufferMinutes = bufferMinutes
-        this._allowCollision = allowCollision
-        this._allocations = allocations
-    }
-
-    get id(): string {
-        return this._id
-    }
-
-    get name(): string {
-        return this._name
-    }
-
-    set name(value: string) {
-        this._name = value
-    }
-
-    get bufferMinutes(): number {
-        return this._bufferMinutes
-    }
-
-    get allowCollision(): boolean {
-        return this._allowCollision
-    }
-
-    get allocations(): Allocation[] {
-        return this._allocations
-    }
-
-    get collisions(): AllocationCollision[] {
-        return this._collisions
+        this.id = id
+        this.name = name
+        this.bufferMinutes = bufferMinutes
+        this.allowCollision = allowCollision
+        this.allocations = allocations
     }
 
     removeAllocation(alloc: Allocation) {
@@ -60,7 +32,7 @@ export class Resource {
                 newCollisions.push(this.collisions[i])
             }
         }
-        this._collisions = newCollisions
+        this.collisions = newCollisions
     }
 
     addAllocation(alloc: Allocation) {

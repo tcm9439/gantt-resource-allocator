@@ -3,21 +3,21 @@ import { TimeRange } from './util/timeRange'
 import { AllocationElementColor } from './allocationElementColor'
 
 export class Allocation {
-    private _name: string
-    private _id: string
-    private _time: TimeRange
-    private _resource: Resource | undefined
-    private _allowCollide: boolean = false
-    private _color: AllocationElementColor
-    public collisionCount: number = 0       // pub for vue compute() reactivity
-    private _valid: boolean = true
+    public name: string
+    public id: string
+    public time: TimeRange
+    public resource: Resource | undefined
+    public allowCollide: boolean = false
+    public color: AllocationElementColor
+    public collisionCount: number = 0
+    public valid: boolean = true
     
     constructor(id: string, name: string, time?: TimeRange, resource?: Resource, color?: AllocationElementColor) {
-        this._id = id
-        this._name = name
-        this._time = time || new TimeRange(new Date(), new Date())
-        this._resource = resource
-        this._color = color || AllocationElementColor.ORANGE
+        this.id = id
+        this.name = name
+        this.time = time || new TimeRange(new Date(), new Date())
+        this.resource = resource
+        this.color = color || AllocationElementColor.ORANGE
 
         this.resource?.addAllocation(this)
     }
@@ -35,61 +35,24 @@ export class Allocation {
         return this._padLeadingZero(time.getHours()) + ":" + this._padLeadingZero(time.getMinutes())
     }
 
-    public get allowCollide(): boolean {
-        return this._allowCollide
+    get hasCollision(): boolean {
+        return this.collisionCount > 0
     }
 
-    public addCollision() {
+    setTime(time: TimeRange) {
+        this.time = time
+    }
+
+    addCollision() {
         this.collisionCount++
     }
 
-    public removeCollision() {
+    removeCollision() {
         this.collisionCount--
     }
 
-    public get resource(): Resource | undefined {
-        return this._resource
-    }
-
-    public set resource(value: Resource | null) {
-        if (this._resource) {
-            this._resource.removeAllocation(this)
-        }
-        if (value) {
-            value.addAllocation(this)
-            this._resource = value
-        }
-    }
-    
-    public get time(): TimeRange {
-        return this._time
-    }
-
-    public set time(value: TimeRange) {
-        this._time = value
-    }
-
-    public get id(): string {
-        return this._id
-    }
-
-    public get name(): string {
-        return this._name
-    }
-
-    public set name(value: string) {
-        this._name = value
-    }
-
-    public get color(): AllocationElementColor {
-        return this._color
-    }
-
-    public get valid(): boolean {
-        return this._valid
-    }
-
-    public set valid(value: boolean) {
-        this._valid = value
+    resetResource() {
+        this.resource?.removeAllocation(this)
+        this.resource = undefined
     }
 }

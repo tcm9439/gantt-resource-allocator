@@ -36,8 +36,12 @@ const xMiddleStateValue = ref(allocPos.value.position.x)
 const yMiddleStateValue = ref(allocPos.value.position.y)
 const wMiddleStateValue = ref(allocPos.value.width)
 
-const collisionCount = computed(() => alloc.value.collisionCount > 0)
-const isValid = computed(() => alloc.value.valid)
+const hasCollision = computed(() => {
+    return alloc.value.hasCollision
+})
+const isValid = computed(() => {
+    return alloc.value.valid
+})
 
 const xBoundToMovable = computed({
     get() {
@@ -71,9 +75,9 @@ const width = computed({
 
 let posBeforeEdit = allocPos.value.copy()
 
-const allocBoxStyle = ref(getAllocationResizableBoxStyle(collisionCount.value, isValid.value, alloc.value.color))
-watch([collisionCount, isValid], () => {
-    allocBoxStyle.value = getAllocationResizableBoxStyle(collisionCount.value, isValid.value, alloc.value.color)
+const allocBoxStyle = ref(getAllocationResizableBoxStyle(hasCollision.value, isValid.value, alloc.value.color))
+watch([hasCollision, isValid], () => {
+    allocBoxStyle.value = getAllocationResizableBoxStyle(hasCollision.value, isValid.value, alloc.value.color)
 })
 
 watch([
@@ -97,7 +101,7 @@ function validateChange() {
     if (posBeforeEdit.equals(allocPos.value) && width.value == posBeforeEdit.width) {
         return
     }
-
+    
     if (width.value > maxWidth) {
         if (posBeforeEdit.width == maxWidth) {
             xBoundToMovable.value = posBeforeEdit.position.x
