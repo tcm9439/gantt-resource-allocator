@@ -4,11 +4,11 @@
 
 ```ts
 import "gantt-resource-allocator/style.css"
-import { Resource, Allocation, AllocationElementColor, TimeRange, ResourceResourceAllocator } from "gantt-resource-allocator"
+import { Resource, Allocation, AllocationColor, TimeRange, ResourceAllocator } from "gantt-resource-allocator"
 ```
 
 ```html
-<ResourceResourceAllocator 
+<ResourceAllocator 
     :resources="laterals" 
     :allocations="allocations" 
     :timetableStartTime="allocTimeTableStartTime" 
@@ -21,4 +21,4 @@ import { Resource, Allocation, AllocationElementColor, TimeRange, ResourceResour
 
 > **Caution!!**
 > This component is client-side only. Do not use this component directly under SSR mode.
-> E.g. If using Nuxt, warp the component with `import { Resource, Allocation, AllocationElementColor, TimeRange, ResourceResourceAllocator } from "gantt-resource-allocator"` in its `<script>` by a `<client-only>` tag.
+> E.g. If using Nuxt, warp the component with `import { Resource, Allocation, AllocationColor, TimeRange, ResourceAllocator } from "gantt-resource-allocator"` in its `<script>` by a `<client-only>` tag.

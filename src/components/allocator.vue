@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css'
 
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, provide } from 'vue'
 import { DraggableContainer } from 'vue3-draggable-resizable'
 import 'default-passive-events'
 
-import AllocationElement from '~/components/allocation.vue'
-import TimetableElement from '~/components/timetable.vue'
-import NowLine from '~/components/now_line.vue'
+// the Vue Component for Allocation
+import AllocationElement from '~/components/allocation.vue' 
 
-import { Allocation } from '~/composables/allocation.ts'
-import { AllocTimeTable } from '~/composables/allocationTimeTable.ts'
-import { Resource } from '~/composables/resource.ts'
+import TimetableElement from '~/components/timetable.vue'
+import NowLine from '~/components/now-line.vue'
+
+import { Allocation } from '~/model/Allocation.ts'
+import {  TimeTableVM } from '~/view-model/TimeTableVM.ts'
+import { TimeTable } from '~/model/TimeTable.ts'
+import { Resource } from '~/model/Resource.ts'
 
 export interface SacProps {
     timetableStartTime: Date,
@@ -42,7 +45,12 @@ const emit = defineEmits<{
     (e: 'edit', alloc: Allocation): void
 }>()
 
-const allocTimeTable = ref(new AllocTimeTable(props.timetableStartTime, props.timetableEndTime, resources.value))
+const time_table_model = new TimeTable(props.timetableStartTime, props.timetableEndTime, resources.value)
+const time_table = new TimeTableVM(time_table_model);
+// const allocTimeTable = ref(time_table )
+
+provide('time_table', time_table)
+
 const activeRow = ref(-1)
 const reRenderAllocCount = ref(0)
 const reRenderNowLineCount = ref(0)
@@ -78,7 +86,6 @@ onUnmounted(() => {
         <DraggableContainer :referenceLineVisible="false">
             <NowLine 
                 :key="'now' + reRenderNowLineCount"
-                :allocTimeTable="allocTimeTable"
                 :timeline-color="props.currentTimelineColor"
             />
 
@@ -89,16 +96,16 @@ onUnmounted(() => {
                 :resources="resources"
                 :headerColor="props.headerColor"
                 :headerTextColor="props.headerTextColor"
-                v-model:allocTimeTable="allocTimeTable" 
+             
                 @re-render-alloc="reRenderAlloc"
             />
             
             <div :key="reRenderAllocCount">
                 <AllocationElement 
                     v-for="alloc in allocations" 
-                    :key="alloc.id"
+                    :key="alloc.id()"
                     :alloc="alloc" 
-                    :allocTimeTable="allocTimeTable"
+                   
                     :minAllocMinutes="minAllocMinutes"
                     :maxAllocMinutes="maxAllocMinutes"
                     v-model:activeRow="activeRow" 

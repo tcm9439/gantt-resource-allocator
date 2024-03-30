@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { Ref, ref } from 'vue'
-import ResourceResourceAllocator from '~/components/allocator.vue'
-import { Resource } from '~/composables/resource'
-import { Allocation } from '~/composables/allocation'
-import { AllocationElementColor } from '~/composables/allocationElementColor'
-import { TimeRange } from '~/composables/util/timeRange'
+import ResourceAllocator from '~/components/allocator.vue'
+import { Resource } from '~/model/Resource'
+import { Allocation } from '~/model/Allocation'
+import { AllocationColor } from '~/util/AllocationColor'
+import { TimeRange } from '~/model/TimeRange'
 
 const laterals = ref([
     new Resource("1", "01A"),
@@ -39,15 +39,17 @@ function getDateTime(dayOffset: number, hour: number, minute: number): Date {
     return date
 }
 
-const allocations = ref([
-    new Allocation("1", "Example 1", new TimeRange(getDateTime(-1, 23, 15), getDateTime(0, 1, 45)), laterals.value[0], AllocationElementColor.ORANGE),
-    new Allocation("2", "Example 2", new TimeRange(getDateTime(0, 3, 20), getDateTime(0, 4, 30)), laterals.value[1], AllocationElementColor.BLUE),
-    new Allocation("3", "Example 3", new TimeRange(getDateTime(0, 14, 40), getDateTime(0, 16, 40)), laterals.value[2], AllocationElementColor.YELLOW),
-    new Allocation("4", "Example 4", new TimeRange(getDateTime(0, 8, 30), getDateTime(0, 9, 35)), laterals.value[3], AllocationElementColor.PURPLE),
-    new Allocation("5", "Example 5", new TimeRange(getDateTime(0, 17, 20), getDateTime(0, 18, 45)), laterals.value[4], AllocationElementColor.ORANGE),
-    new Allocation("6", "Example 6", new TimeRange(getDateTime(0, 9, 30), getDateTime(0, 11, 15)), laterals.value[5], AllocationElementColor.RED),
-    new Allocation("7", "Example 7", new TimeRange(getDateTime(0, 2, 10), getDateTime(0, 3, 20)), laterals.value[6], AllocationElementColor.ORANGE),
-    new Allocation("8", "Example 8", new TimeRange(getDateTime(0, 9, 20), getDateTime(0, 10, 25)), laterals.value[7], AllocationElementColor.BLUE),
+
+
+const allocations: Ref<Array<Allocation>> = ref([
+    Allocation.create("1", "Example 1", new TimeRange(getDateTime(-1, 23, 15), getDateTime(0, 1, 45)), AllocationColor.ORANGE).setResource(laterals.value[0]),
+    Allocation.create("2", "Example 2", new TimeRange(getDateTime(0, 3, 20), getDateTime(0, 4, 30)), AllocationColor.BLUE).setResource(laterals.value[1]),
+    Allocation.create("3", "Example 3", new TimeRange(getDateTime(0, 14, 40), getDateTime(0, 16, 40)), AllocationColor.YELLOW).setResource(laterals.value[2]),
+    Allocation.create("4", "Example 4", new TimeRange(getDateTime(0, 8, 30), getDateTime(0, 9, 35)), AllocationColor.PURPLE).setResource(laterals.value[3]),
+    Allocation.create("5", "Example 5", new TimeRange(getDateTime(0, 17, 20), getDateTime(0, 18, 45)), AllocationColor.ORANGE).setResource(laterals.value[4]),
+    Allocation.create("6", "Example 6", new TimeRange(getDateTime(0, 9, 30), getDateTime(0, 11, 15)), AllocationColor.RED).setResource(laterals.value[5]),
+    Allocation.create("7", "Example 7", new TimeRange(getDateTime(0, 2, 10), getDateTime(0, 3, 20)),  AllocationColor.ORANGE).setResource(laterals.value[6]),
+    Allocation.create("8", "Example 8", new TimeRange(getDateTime(0, 9, 20), getDateTime(0, 10, 25)),  AllocationColor.BLUE).setResource(laterals.value[7]),
 ]) as Ref<Array<Allocation>>
 
 const allocTimeTableStartTime = getDateTime(-1, 23, 0)
@@ -70,7 +72,7 @@ function doDelete() {
         return
     }
     console.log("Do delete", editingAlloc.value)
-    editingAlloc.value.resource?.removeAllocation(editingAlloc.value)
+    editingAlloc.value.resource()?.removeAllocation(editingAlloc.value)
     allocations.value.splice(allocations.value.indexOf(editingAlloc.value), 1)
     doCancel()
 }
@@ -78,9 +80,9 @@ function doDelete() {
 function onEdit(alloc: Allocation) {
     console.log("Edit", alloc)
     editingAlloc.value = alloc
-    editingAllocName.value = alloc.name
+    editingAllocName.value = alloc.name()
     // HH:MM format
-    editingAllocTime.value = `${alloc.time.start.getHours().toString().padStart(2, '0')}:${alloc.time.start.getMinutes().toString().padStart(2, '0')}`
+    editingAllocTime.value = `${alloc.timeRange().start().getHours().toString().padStart(2, '0')}:${alloc.timeRange().start().getMinutes().toString().padStart(2, '0')}`
     editMode.value = 2
 }
 
@@ -89,12 +91,12 @@ function doUpdate() {
         return
     }
     console.log("Do update", editingAlloc.value)
-    editingAlloc.value.name = editingAllocName.value
+    editingAlloc.value.setName( editingAllocName.value)
 
     const timeParts = editingAllocTime.value.split(":")
-    const newStartTime = new Date(editingAlloc.value.time.start)
+    const newStartTime = new Date(editingAlloc.value.timeRange().start())
     newStartTime.setHours(parseInt(timeParts[0]), parseInt(timeParts[1]))
-    editingAlloc.value.time.start = newStartTime
+    editingAlloc.value.timeRange().setStart( newStartTime )
     doCancel()
 }
 
@@ -106,21 +108,24 @@ function doCancel() {
 }
 
 function allocValidation(alloc: Allocation): boolean {
-    if (alloc.id == "1"){
+    if (alloc.id() == "1"){
         // dummy constraint: start time cannot after some date
-        if (alloc.time.start.getTime() > getDateTime(0, 2, 15).getTime()) {
+        if (alloc.timeRange().start().getTime() > getDateTime(0, 2, 15).getTime()) {
             console.log("Validation failed")
             return false
         }
     }
     return true
 }
+
+
+
 </script>
 
 <template>
     <h1>TESTING PAGE</h1>
     <div class="table-wrapper">
-    <ResourceResourceAllocator 
+    <ResourceAllocator 
         :resources="laterals" 
         :allocations="allocations" 
         :timetableStartTime="allocTimeTableStartTime" 

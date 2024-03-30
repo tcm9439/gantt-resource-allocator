@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { computed, ref, Ref, onMounted, watch } from 'vue'
+import { computed, ref, Ref, onMounted, watch, inject } from 'vue'
 import Vue3DraggableResizable from 'vue3-draggable-resizable'
 import ContextMenu from '@imengyu/vue3-context-menu'
 
-import AllocationSummary from '~/components/allocation_summary.vue'
+import AllocationSummary from '~/components/allocation-summary.vue'
 
-import { Allocation } from '~/composables/allocation.ts'
-import { getAllocationResizableBoxStyle } from '~/composables/allocationElementColor.ts'
-import { AllocationPosition } from '~/composables/allocationPosition.ts'
-import { AllocTimeTable } from '~/composables/allocationTimeTable.ts'
+import { Allocation } from '~/model/Allocation.ts'
+import { getAllocationResizableBoxStyle } from '~/util/AllocationColor.ts'
+import { AllocationPosition } from '~/model/AllocationPosition.ts'
+import { TimeTableVM } from '~/view-model/TimeTableVM.ts'
 
 let props = defineProps<{
-    allocTimeTable: AllocTimeTable
+    //allocTimeTable: Ref<TimeTableVM>
     minAllocMinutes: number,
     maxAllocMinutes: number,
     allocationValidationCallback: (alloc: Allocation) => boolean,
@@ -27,17 +27,19 @@ const emit = defineEmits<{
 
 // ==== view data ====
 const showInfoBox = ref(false)
+const time_table:TimeTableVM = inject('time_table') as TimeTableVM
+// props.allocTimeTable.value
 
-const minWidth = props.allocTimeTable.getCellWidth(props.minAllocMinutes)
-const maxWidth = props.allocTimeTable.getCellWidth(props.maxAllocMinutes)
+const minWidth = time_table.getCellWidth(props.minAllocMinutes)
+const maxWidth = time_table.getCellWidth(props.maxAllocMinutes)
 
-const allocPos = ref(new AllocationPosition(props.allocTimeTable.getResourceIndex(alloc.value.resource))) as Ref<AllocationPosition>
-const xMiddleStateValue = ref(allocPos.value.position.x)
-const yMiddleStateValue = ref(allocPos.value.position.y)
-const wMiddleStateValue = ref(allocPos.value.width)
+const allocPos = ref(new AllocationPosition(time_table.getResourceIndex(alloc.value.resource()))) as Ref<AllocationPosition>
+const xMiddleStateValue = ref(allocPos.value.position().x())
+const yMiddleStateValue = ref(allocPos.value.position().y())
+const wMiddleStateValue = ref(allocPos.value.width())
 
 const hasCollision = computed(() => {
-    return alloc.value.hasCollision
+    return alloc.value.hasCollision()
 })
 const isValid = computed(() => {
     return alloc.value.valid
@@ -49,7 +51,7 @@ const xBoundToMovable = computed({
     },
     set(newValue) {
         xMiddleStateValue.value = newValue
-        allocPos.value.position.x = newValue
+        allocPos.value.position().setX( newValue )
     }
 })
 
@@ -59,7 +61,7 @@ const yBoundToMovable = computed({
     },
     set(newValue) {
         yMiddleStateValue.value = newValue
-        allocPos.value.position.y = newValue
+        allocPos.value.position().setY( newValue )
     }
 })
 
@@ -69,60 +71,61 @@ const width = computed({
     },
     set(newValue) {
         wMiddleStateValue.value = newValue
-        allocPos.value.width = newValue
+        allocPos.value.setWidth( newValue )
     }
 })
 
 let posBeforeEdit = allocPos.value.copy()
 
-const allocBoxStyle = ref(getAllocationResizableBoxStyle(hasCollision.value, isValid.value, alloc.value.color))
+const allocBoxStyle = ref(getAllocationResizableBoxStyle(hasCollision.value, isValid.value, alloc.value.color()))
 watch([hasCollision, isValid], () => {
-    allocBoxStyle.value = getAllocationResizableBoxStyle(hasCollision.value, isValid.value, alloc.value.color)
+    allocBoxStyle.value = getAllocationResizableBoxStyle(hasCollision.value, isValid.value, alloc.value.color())
 })
 
+// FIXME, change to public
 watch([
-        () => alloc.value.time, 
-        () => alloc.value.time.start, 
-        () => alloc.value.time.end,
+        () => alloc.value.timeRange(), 
+        () => alloc.value.timeRange().start(), 
+        () => alloc.value.timeRange().end(),
     ], () => {
-        allocPos.value.calculatePosition(alloc.value, props.allocTimeTable)
+        allocPos.value.calculatePosition(alloc.value, time_table)
         forceReloadPos()
 })
 
 // ===== Helper function =====
 function forceReloadPos() {
-    xBoundToMovable.value = allocPos.value.position.x
-    yBoundToMovable.value = allocPos.value.position.y
-    width.value = allocPos.value.width
+    xBoundToMovable.value = allocPos.value.position().x()
+    yBoundToMovable.value = allocPos.value.position().y()
+    width.value = allocPos.value.width()
 }
 
 function validateChange() {
     // if pos & width is unchanged, do nothing
-    if (posBeforeEdit.equals(allocPos.value) && width.value == posBeforeEdit.width) {
+    if (posBeforeEdit.equals(allocPos.value) && width.value == posBeforeEdit.width()) {
         return
     }
     
     if (width.value > maxWidth) {
-        if (posBeforeEdit.width == maxWidth) {
-            xBoundToMovable.value = posBeforeEdit.position.x
+        if (posBeforeEdit.width() == maxWidth) {
+            xBoundToMovable.value = posBeforeEdit.position().x()
         } else {
-            if (xBoundToMovable.value < posBeforeEdit.position.x) {
+            if (xBoundToMovable.value < posBeforeEdit.position().x()) {
                 // x is moved to the left, relocate x
-                xBoundToMovable.value = posBeforeEdit.position.x + posBeforeEdit.width - maxWidth
+                xBoundToMovable.value = posBeforeEdit.position().x() + posBeforeEdit.width() - maxWidth
             }
         }
         width.value = maxWidth
     }
 
-    if (allocPos.value.position.x < props.allocTimeTable.minX ||
-        allocPos.value.position.x + allocPos.value.width > props.allocTimeTable.maxX ||
-        allocPos.value.position.y < props.allocTimeTable.minY ||
-        allocPos.value.position.y + 30 > props.allocTimeTable.maxY
+    if (allocPos.value.position().x() < time_table.minX() ||
+        allocPos.value.position().x() + allocPos.value.width() > time_table.maxX() ||
+        allocPos.value.position().y() < time_table.minY() ||
+        allocPos.value.position().y() + 30 > time_table.maxY()
         ) {
         allocPos.value = posBeforeEdit
     } else {
         try {
-            allocPos.value.relocatedToNearestGrid(alloc.value, props.allocTimeTable)
+            allocPos.value.relocatedToNearestGrid(alloc.value, time_table)
         } catch (e) {
             console.log('relocatedToNearestGrid error:', e)
             allocPos.value = posBeforeEdit
@@ -142,7 +145,7 @@ function validateChange() {
 
 // ===== Lifecycle Hooks =====
 onMounted(() => {
-    allocPos.value.calculatePosition(alloc.value, props.allocTimeTable)
+    allocPos.value.calculatePosition(alloc.value, time_table)
     forceReloadPos()
 })
 
@@ -150,7 +153,7 @@ onMounted(() => {
 
 function onActivated() {
     showInfoBox.value = true
-    activeRow.value = allocPos.value.getActiveRow(props.allocTimeTable)
+    activeRow.value = allocPos.value.getActiveRow(time_table)
 }
 
 function onDeactivated() {
@@ -164,7 +167,7 @@ function onDragStart() {
 
 function onDragging() {
     showInfoBox.value = false
-    activeRow.value = allocPos.value.getActiveRow(props.allocTimeTable)
+    activeRow.value = allocPos.value.getActiveRow(time_table)
 }
 
 function onDragEnd() {
@@ -224,7 +227,7 @@ function onContextMenu(e: MouseEvent) {
             v-if="showInfoBox" 
             :alloc="alloc"
             :allocPos="allocPos"
-            :tableMaxX="props.allocTimeTable.maxX"
+            :tableMaxX="time_table.maxX()"
         />
         <!-- a div that can be resized horizontally -->
         <!-- @contextmenu.prevent="onRightClick" -->
@@ -250,7 +253,7 @@ function onContextMenu(e: MouseEvent) {
             @drag-end="onDragEnd"
             @resize-end="onResizeEnd">
             <div class="allocation-name">
-                {{ alloc.name }}
+                {{ alloc.name() }}
             </div>
         </Vue3DraggableResizable>
     </div>

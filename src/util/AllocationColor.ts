@@ -1,4 +1,4 @@
-export enum AllocationElementColor {
+export enum AllocationColor {
     ORANGE,
     RED,
     YELLOW,
@@ -13,33 +13,33 @@ type AllocationColorStyle = {
     "color": string
 }
 
-const allocationColorList: Map<AllocationElementColor, AllocationColorStyle> = new Map([
-    [AllocationElementColor.ORANGE, {
+const allocationColorList: Map<AllocationColor, AllocationColorStyle> = new Map([
+    [AllocationColor.ORANGE, {
         "background-color": "#FCE6CC",
         "border-color": "#CC9100",
         "color": "black",
     }],
-    [AllocationElementColor.RED, {
+    [AllocationColor.RED, {
         "background-color": "#F4CECC",
         "border-color": "#B15854",
         "color": "black",
     }],
-    [AllocationElementColor.YELLOW, {
+    [AllocationColor.YELLOW, {
         "background-color": "#FDF1CC",
         "border-color": "#D2BB72",
         "color": "black",
     }],
-    [AllocationElementColor.BLUE, {
+    [AllocationColor.BLUE, {
         "background-color": "#DCE8FC",
         "border-color": "#7390C0",
         "color": "black",
     }],
-    [AllocationElementColor.GREEN, {
+    [AllocationColor.GREEN, {
         "background-color": "#D7E8D4",
         "border-color": "#A9CFB8",
         "color": "black",
     }],
-    [AllocationElementColor.PURPLE, {
+    [AllocationColor.PURPLE, {
         "background-color": "#E0D5E7",
         "border-color": "#8D6CA1",
         "color": "black",
@@ -50,7 +50,7 @@ function copyStyle(style: AllocationColorStyle): AllocationColorStyle {
     return { ...style }
 }
 
-export function getAllocationResizableBoxStyle(hasCollision: boolean, isValid: boolean, color: AllocationElementColor): any {
+export function getAllocationResizableBoxStyle(hasCollision: boolean, isValid: boolean, color: AllocationColor): any {
     let style: any = copyStyle(allocationColorList.get(color) as AllocationColorStyle)
 
     if (hasCollision) {

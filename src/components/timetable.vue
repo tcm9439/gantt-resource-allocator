@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, ComponentPublicInstance } from 'vue'
-import { AllocTimeTable } from '~/composables/allocationTimeTable.ts'
+import { ref, watch, onMounted, ComponentPublicInstance, inject } from 'vue'
+import { HtmlElementBoundingRect } from '~/types/common-type';
+import { TimeTableVM } from '~/view-model/TimeTableVM.ts'
 
 let props = defineProps<{
     activeRow: number,
@@ -9,15 +10,37 @@ let props = defineProps<{
     reloadPosition: number,
 }>()
 
-const allocTimeTable = defineModel('allocTimeTable', { required: true, type: AllocTimeTable})
+// const allocTimeTable = defineModel('allocTimeTable', { required: true, type: TimeTableVM})
+// const allocTimeTable
+const time_table = inject('time_table') as TimeTableVM
 const emits = defineEmits(['re-render-alloc'])
 
-const timeColLabels = allocTimeTable.value.getTableHourLabel()
-const timColCount = timeColLabels.getTotalNumberOfTimeColumns()
+const timeColLabels = time_table.timeTable().getTableColumnLabel()
+const timeColumnCount = timeColLabels.getTotalNumberOfTimeColumns()
 
 // init cellRefList
+// element ref to each time cell => cellRefList[resource row][timeIndex]
+// 
+
+// store all of the cell showing in the table
 const cellRefList: Array<Array<HTMLElement>> = []
-allocTimeTable.value.initCellRefList(cellRefList, timColCount)
+// init cellRefList by number of resource x number of timeColumnCount
+for(let i=0; i < time_table.timeTable().resources().length; i++){
+    cellRefList[i] = [];
+    // for (let j=0; j <timeColumnCount; j++){
+    //     cellRefList[i][j]=null
+    // }
+    cellRefList[i].length = timeColumnCount
+}
+
+console.log('Number of resource', time_table.timeTable().resources().length  );
+console.log('number of column ', timeColumnCount)
+
+//time_table.initCellRefList(cellRefList, timeColumnCount)
+
+// const resource_count = time_table.timeTable().getResourceRowLabel().length
+//TimeTableVM.initCellRefList(cellRefList, resource_count, timeColumnCount)
+
 const tableRef = ref<HTMLElement | null>(null)
 
 function resourceClass(index: number) {
@@ -60,10 +83,44 @@ function getHeaderStyle() {
 
 function initAllocTimeTable() {
     if (tableRef.value && cellRefList.length > 0){
-        allocTimeTable.value.initValues(10, tableRef.value, cellRefList)
+        // time_table.initValues(10, tableRef.value, cellRefList)
+
+        const t_bounding_rect = tableRef.value.getBoundingClientRect();
+        const tableBoundRect = <HtmlElementBoundingRect>{
+            x:t_bounding_rect.x,
+            y: t_bounding_rect.y,
+            width: t_bounding_rect.width,
+            height: t_bounding_rect.height
+        }
+
+        time_table.setTableBoundRect(tableBoundRect)
+
+		const column_count = time_table.timeTable().timeColumnCount()
+
+        
+        // update the latest cell bound rect to the allocTimeTable
+        for (let i = 0; i < cellRefList.length; i++) {
+            for (let j = 0; j < column_count; j++) {
+
+                // cellBoundRect.y = 80 + i * 25
+                // we have one row, should change the column x coordinate
+                let temp_cellBoundRect = <HtmlElementBoundingRect> {
+                    x: cellRefList[i][j].getBoundingClientRect().x,
+                    y: cellRefList[i][j].getBoundingClientRect().y,
+                    width: cellRefList[i][j].getBoundingClientRect().width,
+                    height: cellRefList[i][j].getBoundingClientRect().height
+                }
+    
+                time_table. setCellBoundRect(i,j , temp_cellBoundRect)
+            }
+        }
+        console.log("Time table initAllocTimeTable() end")
+        time_table.onReady();
         emits("re-render-alloc")
     }
 }
+
+
 
 watch(() => props.reloadPosition, () => {
     initAllocTimeTable()
@@ -113,10 +170,10 @@ function setCellRef(index: number, i: number, el: Element | ComponentPublicInsta
                     {{ minute.label }}
                 </td>
             </tr>
-            <tr v-for="resource in allocTimeTable.getResourceRowLabel()" :key="resource.vKey" :class="resourceClass(resource.index)">
+            <tr v-for="resource in time_table.timeTable().getResourceRowLabel()" :key="resource.vKey" :class="resourceClass(resource.index)">
                 <td class="header col-resource-header" :style="getHeaderStyle()">{{ resource.label }}</td>
                 <td
-                    v-for="i in timColCount"
+                    v-for="i in timeColumnCount"
                     :key="resource.vKey + '-' + i"
                     :ref="(element) => setCellRef(resource.index, i, element)"
                     :class="resourceCellClass(i)"

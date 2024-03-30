@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import Vue3DraggableResizable from 'vue3-draggable-resizable'
-import { Allocation } from '~/composables/allocation.ts'
-import { AllocationPosition } from '~/composables/allocationPosition.ts'
+import { Allocation } from '~/model/Allocation.ts'
+import { AllocationPosition } from '~/model/AllocationPosition.ts'
 
 let props = defineProps<{
     alloc: Allocation,
@@ -14,7 +14,7 @@ const infoWidth = 150
 const infoYOffset = 30
 
 let infoX = computed(() => {
-    let midInfoX = props.allocPos.position.x + props.allocPos.width / 2 - infoWidth / 2
+    let midInfoX = props.allocPos.position().x() + props.allocPos.width() / 2 - infoWidth / 2
     // if midInfoX is out of bounds, move it to the edge
     if (midInfoX < 0) {
         return 0
@@ -26,15 +26,15 @@ let infoX = computed(() => {
 })
 
 let infoY = computed(() => {
-    return props.allocPos.position.y - infoYOffset
+    return props.allocPos.position().y() - infoYOffset
 })
 
 let startTimeDisplay = computed(() => {
-    return Allocation.toDisplayString(props.alloc.time.start)
+    return Allocation.toDisplayString(props.alloc.timeRange().start())
 })
 
 let endTimeDisplay = computed(() => {
-    return Allocation.toDisplayString(props.alloc.time.end)
+    return Allocation.toDisplayString(props.alloc.timeRange().end())
 })
 </script>
 
