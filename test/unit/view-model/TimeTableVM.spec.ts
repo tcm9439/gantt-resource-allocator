@@ -47,7 +47,7 @@ describe('TimeTableVM', () => {
         for (let i = 0; i < column_count; i++) {
             // cellBoundRect.y = 80 + i * 25
             // we have one row, should change the column x coordinate
-            let temp_cellBoundRect = { ...cellBoundRect }
+            const temp_cellBoundRect = { ...cellBoundRect }
 
             temp_cellBoundRect.x = 60 + i * 100
 

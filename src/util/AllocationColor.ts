@@ -73,7 +73,7 @@ function copyStyle(style: AllocationColorStyle): AllocationColorStyle {
 }
 
 export function getAllocationResizableBoxStyle(hasCollision: boolean, isValid: boolean, color: AllocationColor): any {
-    let style: any = copyStyle(allocationColorList.get(color) as AllocationColorStyle)
+    const style: any = copyStyle(allocationColorList.get(color) as AllocationColorStyle)
 
     if (hasCollision) {
         // set striped background

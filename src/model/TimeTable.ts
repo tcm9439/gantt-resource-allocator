@@ -58,7 +58,7 @@ export class TimeTable {
      * @returns
      */
     public getResourceRowLabel(): Array<ResourceRowLabel> {
-        let result: Array<ResourceRowLabel> = []
+        const result: Array<ResourceRowLabel> = []
         for (let i = 0; i < this._resources.length; i++) {
             result.push({
                 vKey: this._resources[i].id(),

@@ -16,7 +16,7 @@ export class CollidedAllocation {
     }
 
     /**
-     *
+     * Check if the given allocation is included in the collision
      * @param alloc
      * @returns
      */

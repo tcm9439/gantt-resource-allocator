@@ -28,7 +28,7 @@ export class TimeColumnLabel {
     // Array<[ key, label, colSpan]>
     // key = date-header+date+label
     getAllDates(): Array<DateColumnLabel> {
-        let result: Array<DateColumnLabel> = []
+        const result: Array<DateColumnLabel> = []
         for (let i = 0; i < this.colLabels.length; i++) {
             result.push({
                 vKey: `date-header-${this.colLabels[i].date}`,
@@ -43,7 +43,7 @@ export class TimeColumnLabel {
     // key = hour-header+date+label
     // it didn't specify the colSpan, it should be 4 (15 minutes per hour)
     getAllHours(): Array<HourColumnLabel> {
-        let result: Array<HourColumnLabel> = []
+        const result: Array<HourColumnLabel> = []
         for (let i = 0; i < this.colLabels.length; i++) {
             for (let j = 0; j < this.colLabels[i].hours.length; j++) {
                 result.push({
@@ -56,10 +56,10 @@ export class TimeColumnLabel {
     }
 
     getAllMinutes(): Array<MinuteColumnLabel> {
-        let result: Array<MinuteColumnLabel> = []
+        const result: Array<MinuteColumnLabel> = []
         for (let i = 0; i < this.colLabels.length; i++) {
             for (let j = 0; j < this.colLabels[i].hours.length; j++) {
-                for (let k of TimeColumnLabel.MINUTE_HEADER) {
+                for (const k of TimeColumnLabel.MINUTE_HEADER) {
                     result.push({
                         vKey: `min-header-${this.colLabels[i].date}-${this.colLabels[i].hours[j]}-${k}`,
                         label: k,

@@ -120,9 +120,9 @@ export class TimeTableVM {
      */
     public initValues() {
         // console.log("initValues", this._cells, tableRef)
-        let firstCellBox = this._cells[0][0]
+        const firstCellBox = this._cells[0][0]
         console.log('firstCellBox', firstCellBox)
-        let tableBox = this._tableBoundRect
+        const tableBox = this._tableBoundRect
 
         // load row and column positions
         this._columnsY = []
@@ -209,9 +209,9 @@ export class TimeTableVM {
      */
     public getCellX(time: Date): number {
         let minuteDiff = DateUtil.getMinutesDiff(this._timeRange.start(), time)
-        let hourDiff = Math.floor(minuteDiff / 60)
+        const hourDiff = Math.floor(minuteDiff / 60)
         minuteDiff = minuteDiff % 60
-        let timeIndex = hourDiff * 4 + Math.floor(minuteDiff / 15)
+        const timeIndex = hourDiff * 4 + Math.floor(minuteDiff / 15)
         return this._rowsX[timeIndex] + (minuteDiff % 15) * this._minuteWidth + 0.5
     }
 
@@ -233,17 +233,17 @@ export class TimeTableVM {
      * @returns
      */
     public getActiveRow(y: number) {
-        let midY = y + this._rowHeight / 2
+        const midY = y + this._rowHeight / 2
         return Math.floor((midY - this._rowOffset) / this._rowHeight)
     }
 
     public getTimeFromPosition(x: number): Date {
-        let midX = x - this._colOffset + this._colWidth / 2
+        const midX = x - this._colOffset + this._colWidth / 2
         for (let i = 0; i < this._rowsX.length; i++) {
             if (midX < this._rowsX[i] + this._colWidth) {
-                let time = new Date(this._timeRange.start())
+                const time = new Date(this._timeRange.start())
                 time.setHours(time.getHours() + Math.floor(i / 4))
-                let minutes = (i % 4) * 15 + (x - this._rowsX[i]) / this._minuteWidth
+                const minutes = (i % 4) * 15 + (x - this._rowsX[i]) / this._minuteWidth
                 // round to the nearest <precision> minutes
                 time.setMinutes(Math.round(minutes / this._minutePrecision) * this._minutePrecision)
                 return time

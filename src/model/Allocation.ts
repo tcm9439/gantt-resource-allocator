@@ -1,15 +1,24 @@
 import type { Resource } from './Resource'
 import { TimeRange } from './TimeRange'
 import { AllocationColor } from '~/util/AllocationColor'
+import { StringUtil } from '~/util/StringUtil'
 
+/**
+ * An allocation represent a time range that a resource is allocated to some task.
+ */
 export class Allocation {
     private _id: string
     private _name: string
     private _time_range: TimeRange
+    // the resource that hold this allocation
     private _resource: Resource | undefined
+    // if this allocation can collide with other allocations
     private _allowCollide: boolean = false
+    // color for display
     private _color: AllocationColor
+    // number of collision with other allocations
     public collisionCount: number = 0
+    // if this allocation is valid
     public valid: boolean = true
 
     constructor(id: string, name: string, time_range?: TimeRange, color?: AllocationColor) {
@@ -45,10 +54,17 @@ export class Allocation {
 
     // return this for method chaining for create
     public setResource(resource: Resource) {
+        if (this._resource === resource) {
+            return this
+        } else if (this._resource) {
+            this.resetResource()
+        }
+
         this._resource = resource
         this._resource?.addAllocation(this)
         return this
     }
+
     public resetResource() {
         this._resource?.removeAllocation(this)
         this._resource = undefined
@@ -66,13 +82,17 @@ export class Allocation {
         return a
     }
 
-    private static _padLeadingZero(num: number): string {
-        return num.toString().padStart(2, '0')
-    }
-
+    /**
+     * Format time to HH:mm
+     * @param time
+     * @returns HH:mm
+     */
     public static toDisplayString(time: Date) {
-        // return HH:mm
-        return this._padLeadingZero(time.getHours()) + ':' + this._padLeadingZero(time.getMinutes())
+        return (
+            StringUtil.padLeadingZeroForSingleDigit(time.getHours()) +
+            ':' +
+            StringUtil.padLeadingZeroForSingleDigit(time.getMinutes())
+        )
     }
 
     public hasCollision(): boolean {

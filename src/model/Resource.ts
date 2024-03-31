@@ -51,7 +51,7 @@ export class Resource {
      * @param alloc
      */
     public removeAllocation(alloc: Allocation): boolean {
-        let index = this._allocations.indexOf(alloc)
+        const index = this._allocations.indexOf(alloc)
         let removed = false
         if (index !== -1) {
             this._allocations.splice(index, 1)
@@ -59,7 +59,7 @@ export class Resource {
         }
 
         // remove from allocation from _collisions
-        let newCollisions: CollidedAllocation[] = []
+        const newCollisions: CollidedAllocation[] = []
         for (let i = 0; i < this._collisions.length; i++) {
             if (this._collisions[i].includes(alloc)) {
                 this._collisions[i].removeCollisionCount()

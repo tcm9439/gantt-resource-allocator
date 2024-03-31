@@ -17,7 +17,7 @@ export class TimeRange {
     }
 
     /**
-     * check if a given date)time is within the time range
+     * check if a given date-time is within the time range
      * @param date_time
      * @returns
      */
@@ -87,8 +87,8 @@ export class TimeRange {
      *
      */
     public stepsByHour(date_format: string = 'DDMMM'): Array<Array<string>> {
-        let result: Array<Array<string>> = []
-        let currentDate = new Date(this._start)
+        const result: Array<Array<string>> = []
+        const currentDate = new Date(this._start)
         let lastDate: null | Date = null
 
         while (currentDate <= this._end) {
@@ -107,8 +107,8 @@ export class TimeRange {
      * where hours is array of hour of that date
      */
     public stepsByDateAndHour(date_format: string = 'DDMMM') {
-        let result: Array<AllocTimeColLabel> = []
-        let currentDate = new Date(this._start)
+        const result: Array<AllocTimeColLabel> = []
+        const currentDate = new Date(this._start)
         let lastDate: null | Date = null
         let hours: Array<string> = []
         while (currentDate <= this._end) {

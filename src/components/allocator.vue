@@ -1,13 +1,17 @@
 <script setup lang="ts">
+// context menu css
 import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css'
 
-import { ref, onMounted, onUnmounted, provide } from 'vue'
-import { DraggableContainer } from 'vue3-draggable-resizable'
+// make event listeners passive to improve scrolling performance (prevent chrome warning)
+// suspected the resize event listener & the draggable-resizable library is causing the warning
 import 'default-passive-events'
+
+import { DraggableContainer } from 'vue3-draggable-resizable'
+
+import { ref, onMounted, onUnmounted, provide } from 'vue'
 
 // the Vue Component for Allocation
 import AllocationElement from '~/components/allocation.vue'
-
 import TimetableElement from '~/components/timetable.vue'
 import NowLine from '~/components/now-line.vue'
 
@@ -40,6 +44,7 @@ const props = withDefaults(defineProps<SacProps>(), {
 const resources = defineModel('resources', { required: true, type: Array<Resource> })
 const allocations = defineModel('allocations', { required: true, type: Array<Allocation> })
 
+// emit the events triggered by the context menu
 const emit = defineEmits<{
     (e: 'delete', alloc: Allocation): void
     (e: 'edit', alloc: Allocation): void
@@ -47,7 +52,6 @@ const emit = defineEmits<{
 
 const time_table_model = new TimeTable(props.timetableStartTime, props.timetableEndTime, resources.value)
 const time_table = new TimeTableVM(time_table_model)
-// const allocTimeTable = ref(time_table )
 
 provide('time_table', time_table)
 
@@ -56,6 +60,7 @@ const reRenderAllocCount = ref(0)
 const reRenderNowLineCount = ref(0)
 const reRenderTimeTableCount = ref(0)
 
+// trigger re-render of Allocation & NowLine due to changes in (coordinate system of) the TimeTable
 function reRenderAlloc() {
     reRenderAllocCount.value++
     reRenderNowLineCount.value++
@@ -67,9 +72,9 @@ function getTableHeightStyle() {
     }
 }
 
+// when window is resized, re-render the TimeTable as the width/height/x/y may have changed
 function windowResizeHandler() {
     reRenderTimeTableCount.value++
-    reRenderNowLineCount.value++
 }
 
 onMounted(() => {
