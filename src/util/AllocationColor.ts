@@ -1,3 +1,7 @@
+/**
+ * Color & style for the draggable resizable allocation box
+ */
+
 export enum AllocationColor {
     ORANGE,
     RED,

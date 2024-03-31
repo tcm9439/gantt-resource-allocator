@@ -11,7 +11,6 @@ import { AllocationPosition } from '~/model/AllocationPosition.ts'
 import { TimeTableVM } from '~/view-model/TimeTableVM.ts'
 
 let props = defineProps<{
-    //allocTimeTable: Ref<TimeTableVM>
     minAllocMinutes: number,
     maxAllocMinutes: number,
     allocationValidationCallback: (alloc: Allocation) => boolean,
@@ -28,7 +27,6 @@ const emit = defineEmits<{
 // ==== view data ====
 const showInfoBox = ref(false)
 const time_table:TimeTableVM = inject('time_table') as TimeTableVM
-// props.allocTimeTable.value
 
 const minWidth = time_table.getCellWidth(props.minAllocMinutes)
 const maxWidth = time_table.getCellWidth(props.maxAllocMinutes)
@@ -45,6 +43,11 @@ const isValid = computed(() => {
     return alloc.value.valid
 })
 
+// xBoundToMovable => bind to the resizable box component
+// when xBoundToMovable is changed (the component is moved), update the middle-state & modal x
+// when modal x is changed, the middle-state & xBoundToMovable is not updated automatically
+//         instead, updated it with forceReloadPos()
+// don't known why the reactivity is not working when there no middle-state
 const xBoundToMovable = computed({
     get() {
         return xMiddleStateValue.value
@@ -82,7 +85,6 @@ watch([hasCollision, isValid], () => {
     allocBoxStyle.value = getAllocationResizableBoxStyle(hasCollision.value, isValid.value, alloc.value.color())
 })
 
-// FIXME, change to public
 watch([
         () => alloc.value.timeRange(), 
         () => alloc.value.timeRange().start(), 

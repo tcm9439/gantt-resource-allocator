@@ -1,4 +1,4 @@
-export class VueUtil{
+export class VueUtil {
     // https://github.com/twickstrom/vue-force-next-tick/blob/master/src/index.js
     public static onRenderComplete(callback: any){
         const doubleRequestAnimationFrame = (callback: any) => {
@@ -6,7 +6,7 @@ export class VueUtil{
                 console.log('doubleRequestAnimationFrame 1  ')
                 requestAnimationFrame(callback)
             })
-            }
+        }
             
         const forceNextTick = (callback: any) => {
             if (callback && typeof callback === 'function') {
@@ -17,10 +17,6 @@ export class VueUtil{
                 })
             }
         }
-
         forceNextTick(callback)
     }
-
-
-
 }
