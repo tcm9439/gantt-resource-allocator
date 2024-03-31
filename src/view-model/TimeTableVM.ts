@@ -1,12 +1,10 @@
-import { Resource } from "~/model/Resource";
-import { TimeRange } from "~/model/TimeRange";
-import { TimeTable } from "~/model/TimeTable";
-import { DateUtil } from '~/util/DateUtil';
+import { Resource } from '~/model/Resource'
+import { TimeRange } from '~/model/TimeRange'
+import { TimeTable } from '~/model/TimeTable'
+import { DateUtil } from '~/util/DateUtil'
 import { HtmlElementBoundingRect } from '~/types/common-type'
 
-
-export class TimeTableVM{
-
+export class TimeTableVM {
     private _time_table: TimeTable
     private _timeRange: TimeRange
     private _minutePrecision: number = 5
@@ -16,11 +14,11 @@ export class TimeTableVM{
 
     // width of a minute in the time table
     private _minuteWidth: number = 0
-    private _itemTopPadding = 0;
-    private _rowHeight: number = 0;
-    private _rowOffset: number = 0    // y offset due to header
+    private _itemTopPadding = 0
+    private _rowHeight: number = 0
+    private _rowOffset: number = 0 // y offset due to header
     private _colWidth: number = 0
-    private _colOffset: number = 0    // x offset due to header
+    private _colOffset: number = 0 // x offset due to header
 
     private _minX: number = 0
     private _minY: number = 0
@@ -38,9 +36,9 @@ export class TimeTableVM{
 
     /**
      * give the time table, generate the view model for the time table
-     * 
-     * @param time_table 
-     * @param timeColCount 
+     *
+     * @param time_table
+     * @param timeColCount
      */
     public constructor(time_table: TimeTable) {
         const timeColCount: number = time_table.timeColumnCount()
@@ -54,19 +52,19 @@ export class TimeTableVM{
         // to initialize all cells of the time table
         // each row (resource) has a list of cells (time column)
         const resource_count = this._resources.length
-        for (let i = 0; i < resource_count; i++) { // this._resources.length
+        for (let i = 0; i < resource_count; i++) {
+            // this._resources.length
             this._cells.push([])
             this._cells[i].length = timeColCount
         }
     }
-    
 
     // /**
     //  * to initialize all cells of the time table
     //  * each row (resource) has a list of cells (time column)
-    //  * 
+    //  *
     //  * @param cellRefList element ref to each time cell => cellRefList[resource row][timeIndex]
-    //  * @param timeColCount 
+    //  * @param timeColCount
     //  */
     // public initCellRefList(cellRefList: Array<Array<HTMLElement>>, resource_count: number, timeColCount: number) {
     //     for (let i = 0; i < resource_count; i++) { // this._resources.length
@@ -79,8 +77,8 @@ export class TimeTableVM{
     //  * bind the timetable td to the cell of TimeTableVM cell
     //  * see setCellRef of timetable.vue
     //  * @param row  resource row index
-    //  * @param column 
-    //  * @param el 
+    //  * @param column
+    //  * @param el
     //  */
     // public setCellRef(row: number, column: number, el: Element) {
     //     // console.log("setCellRef", row, column, el)
@@ -91,48 +89,45 @@ export class TimeTableVM{
     //     return this._cells[row][column]
     // }
 
-    private _tableBoundRect:HtmlElementBoundingRect = { x: 0, y: 0, width: 0, height: 0 };
-   
+    private _tableBoundRect: HtmlElementBoundingRect = { x: 0, y: 0, width: 0, height: 0 }
 
     /**
      *  tableRef.getBoundingClientRect()
-     * @param rect 
+     * @param rect
      */
-    public setTableBoundRect(rect:HtmlElementBoundingRect){
-        this._tableBoundRect = rect;
+    public setTableBoundRect(rect: HtmlElementBoundingRect) {
+        this._tableBoundRect = rect
     }
-    public getTableBoundRect():HtmlElementBoundingRect{
-        return this._tableBoundRect;
+    public getTableBoundRect(): HtmlElementBoundingRect {
+        return this._tableBoundRect
     }
 
     // this._cells[0][0].getBoundingClientRect()
-    public setCellBoundRect(row: number, column: number,rect:HtmlElementBoundingRect){
+    public setCellBoundRect(row: number, column: number, rect: HtmlElementBoundingRect) {
         //console.log("setCellBoundRect", row, column, rect)
-        this._cells[row][column] = rect;
+        this._cells[row][column] = rect
     }
-    public getCellBoundRect(row: number, column: number):HtmlElementBoundingRect{
-        return this._cells[row][column];
+    public getCellBoundRect(row: number, column: number): HtmlElementBoundingRect {
+        return this._cells[row][column]
     }
 
     /**
-     * 
+     *
      * NOTE: initValues MUST be called after all cells are binded  with TimeTableVM.setCellRef
-     * 
-     * @param rowNonOffsetPx 
+     *
+     * @param rowNonOffsetPx
      * @param cellRefList element ref to each time cell => cellRefList[resource row][timeIndex]
      */
     public initValues() {
-
         // console.log("initValues", this._cells, tableRef)
-        let firstCellBox = this._cells[0][0];
-        console.log("firstCellBox", firstCellBox)
-        let tableBox = this._tableBoundRect;
-        
+        let firstCellBox = this._cells[0][0]
+        console.log('firstCellBox', firstCellBox)
+        let tableBox = this._tableBoundRect
 
         // load row and column positions
         this._columnsY = []
         for (let i = 0; i < this._cells.length; i++) {
-            console.log("Column Y ", i, this._cells[i][0].y, tableBox.y)
+            console.log('Column Y ', i, this._cells[i][0].y, tableBox.y)
             this._columnsY.push(this._cells[i][0].y - tableBox.y)
         }
 
@@ -173,9 +168,9 @@ export class TimeTableVM{
 
     /**
      * width of a minute in the time table
-     * @returns 
+     * @returns
      */
-    public minuteWidth():number{
+    public minuteWidth(): number {
         return this._minuteWidth
     }
 
@@ -189,7 +184,7 @@ export class TimeTableVM{
 
     /**
      * the x offset of the first cell to the table header
-     * @returns 
+     * @returns
      */
     public colOffset(): number {
         return this._colOffset
@@ -197,7 +192,7 @@ export class TimeTableVM{
 
     /**
      * the y offset of the first cell to the table header
-     * @returns 
+     * @returns
      */
     public rowOffset(): number {
         return this._rowOffset
@@ -209,63 +204,61 @@ export class TimeTableVM{
 
     /**
      * use the time to get the cel x position (pixel)
-     * @param time 
-     * @returns 
+     * @param time
+     * @returns
      */
-    public getCellX(time: Date): number{
+    public getCellX(time: Date): number {
         let minuteDiff = DateUtil.getMinutesDiff(this._timeRange.start(), time)
         let hourDiff = Math.floor(minuteDiff / 60)
         minuteDiff = minuteDiff % 60
         let timeIndex = hourDiff * 4 + Math.floor(minuteDiff / 15)
-        return this._rowsX[timeIndex] + minuteDiff % 15 * this._minuteWidth + 0.5
+        return this._rowsX[timeIndex] + (minuteDiff % 15) * this._minuteWidth + 0.5
     }
 
     public setItemTopPadding(value: number) {
-        this._itemTopPadding = value;
+        this._itemTopPadding = value
     }
 
-
     public getItemTopPadding(): number {
-        return this._itemTopPadding;
+        return this._itemTopPadding
     }
 
     public getCellY(row: number) {
         return this._columnsY[row] + this._itemTopPadding
     }
 
-
     /**
      * get the active row based on the y position
-     * @param y 
-     * @returns 
+     * @param y
+     * @returns
      */
     public getActiveRow(y: number) {
         let midY = y + this._rowHeight / 2
         return Math.floor((midY - this._rowOffset) / this._rowHeight)
     }
 
-    public getTimeFromPosition(x: number): Date{
+    public getTimeFromPosition(x: number): Date {
         let midX = x - this._colOffset + this._colWidth / 2
         for (let i = 0; i < this._rowsX.length; i++) {
             if (midX < this._rowsX[i] + this._colWidth) {
                 let time = new Date(this._timeRange.start())
                 time.setHours(time.getHours() + Math.floor(i / 4))
-                let minutes = i % 4 * 15 + (x - this._rowsX[i]) / this._minuteWidth
+                let minutes = (i % 4) * 15 + (x - this._rowsX[i]) / this._minuteWidth
                 // round to the nearest <precision> minutes
                 time.setMinutes(Math.round(minutes / this._minutePrecision) * this._minutePrecision)
                 return time
             }
         }
-        throw new Error("Time not found")
+        throw new Error('Time not found')
     }
 
     /**
      * get cell width based on the minutes represented by the cell
-     * e.g. task task 60 minutes 
-     * @param minutes 
-     * @returns 
+     * e.g. task task 60 minutes
+     * @param minutes
+     * @returns
      */
-    public getCellWidth(minutes: number): number{
+    public getCellWidth(minutes: number): number {
         // minus the 0.5px border
         return minutes * this._minuteWidth - 0.5 * Math.floor(minutes / 15)
     }
@@ -298,19 +291,19 @@ export class TimeTableVM{
         return this._time_table.getResourceIndex(resource)
     }
 
-    public timeTable(): TimeTable{
-        return this._time_table;
+    public timeTable(): TimeTable {
+        return this._time_table
     }
 
     /**
-     * when the time table is ready (the OnReady() is called), 
+     * when the time table is ready (the OnReady() is called),
      * call the registered listener
      */
-    private _on_ready_listener: any[] = [];
-      registerOnReadyListener(listener: any) {
-          this._on_ready_listener.push(listener)
+    private _on_ready_listener: any[] = []
+    registerOnReadyListener(listener: any) {
+        this._on_ready_listener.push(listener)
     }
-  
+
     public onReady() {
         this.initValues()
         for (let i = 0; i < this._on_ready_listener.length; i++) {

@@ -11,8 +11,8 @@ export class Allocation {
     private _color: AllocationColor
     public collisionCount: number = 0
     public valid: boolean = true
-    
-    constructor(id: string, name: string, time_range?: TimeRange,  color?: AllocationColor) {
+
+    constructor(id: string, name: string, time_range?: TimeRange, color?: AllocationColor) {
         this._id = id
         this._name = name
         this._time_range = time_range || new TimeRange(new Date(), new Date())
@@ -31,10 +31,9 @@ export class Allocation {
         return this._name
     }
 
-    public setName( name: string){
+    public setName(name: string) {
         this._name = name
     }
-
 
     public setTimeRange(time_range: TimeRange) {
         this._time_range = time_range
@@ -71,9 +70,9 @@ export class Allocation {
         return num.toString().padStart(2, '0')
     }
 
-    public static toDisplayString(time: Date){
+    public static toDisplayString(time: Date) {
         // return HH:mm
-        return this._padLeadingZero(time.getHours()) + ":" + this._padLeadingZero(time.getMinutes())
+        return this._padLeadingZero(time.getHours()) + ':' + this._padLeadingZero(time.getMinutes())
     }
 
     public hasCollision(): boolean {
@@ -87,8 +86,6 @@ export class Allocation {
     public removeCollision() {
         this.collisionCount--
     }
-
-
 
     public allowCollide(): boolean {
         return this._allowCollide

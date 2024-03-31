@@ -6,39 +6,39 @@ import { DraggableContainer } from 'vue3-draggable-resizable'
 import 'default-passive-events'
 
 // the Vue Component for Allocation
-import AllocationElement from '~/components/allocation.vue' 
+import AllocationElement from '~/components/allocation.vue'
 
 import TimetableElement from '~/components/timetable.vue'
 import NowLine from '~/components/now-line.vue'
 
 import { Allocation } from '~/model/Allocation.ts'
-import {  TimeTableVM } from '~/view-model/TimeTableVM.ts'
+import { TimeTableVM } from '~/view-model/TimeTableVM.ts'
 import { TimeTable } from '~/model/TimeTable.ts'
 import { Resource } from '~/model/Resource.ts'
 
 export interface SacProps {
-    timetableStartTime: Date,
-    timetableEndTime: Date,
-    minAllocMinutes: number,
-    maxAllocMinutes: number,
-    headerColor?: string,
-    headerTextColor?: string,
-    tableHeight?: string,
-    currentTimelineColor?: string,
-    allocationValidationCallback?: (alloc: Allocation) => boolean,
+    timetableStartTime: Date
+    timetableEndTime: Date
+    minAllocMinutes: number
+    maxAllocMinutes: number
+    headerColor?: string
+    headerTextColor?: string
+    tableHeight?: string
+    currentTimelineColor?: string
+    allocationValidationCallback?: (alloc: Allocation) => boolean
 }
 
 // optional properties default values
 const props = withDefaults(defineProps<SacProps>(), {
-    headerColor: "#987544",
-    headerTextColor: "white",
-    tableHeight: "800px",
-    currentTimelineColor: "red",
+    headerColor: '#987544',
+    headerTextColor: 'white',
+    tableHeight: '800px',
+    currentTimelineColor: 'red',
     allocationValidationCallback: (_alloc: Allocation) => true,
 })
 
-const resources = defineModel("resources", { required: true, type: Array<Resource> })
-const allocations = defineModel("allocations", { required: true, type: Array<Allocation> })
+const resources = defineModel('resources', { required: true, type: Array<Resource> })
+const allocations = defineModel('allocations', { required: true, type: Array<Allocation> })
 
 const emit = defineEmits<{
     (e: 'delete', alloc: Allocation): void
@@ -46,7 +46,7 @@ const emit = defineEmits<{
 }>()
 
 const time_table_model = new TimeTable(props.timetableStartTime, props.timetableEndTime, resources.value)
-const time_table = new TimeTableVM(time_table_model);
+const time_table = new TimeTableVM(time_table_model)
 // const allocTimeTable = ref(time_table )
 
 provide('time_table', time_table)
@@ -73,42 +73,37 @@ function windowResizeHandler() {
 }
 
 onMounted(() => {
-    window.addEventListener("resize", windowResizeHandler)
+    window.addEventListener('resize', windowResizeHandler)
 })
 
 onUnmounted(() => {
-    window.removeEventListener("resize", windowResizeHandler)
+    window.removeEventListener('resize', windowResizeHandler)
 })
 </script>
 
 <template>
     <div class="table-warper" :style="getTableHeightStyle()">
         <DraggableContainer :referenceLineVisible="false">
-            <NowLine 
-                :key="'now' + reRenderNowLineCount"
-                :timeline-color="props.currentTimelineColor"
-            />
+            <NowLine :key="'now' + reRenderNowLineCount" :timeline-color="props.currentTimelineColor" />
 
-            <TimetableElement 
+            <TimetableElement
                 class="timetable"
                 :reloadPosition="reRenderTimeTableCount"
-                :activeRow="activeRow" 
+                :activeRow="activeRow"
                 :resources="resources"
                 :headerColor="props.headerColor"
                 :headerTextColor="props.headerTextColor"
-             
                 @re-render-alloc="reRenderAlloc"
             />
-            
+
             <div :key="reRenderAllocCount">
-                <AllocationElement 
-                    v-for="alloc in allocations" 
+                <AllocationElement
+                    v-for="alloc in allocations"
                     :key="alloc.id()"
-                    :alloc="alloc" 
-                   
+                    :alloc="alloc"
                     :minAllocMinutes="minAllocMinutes"
                     :maxAllocMinutes="maxAllocMinutes"
-                    v-model:activeRow="activeRow" 
+                    v-model:activeRow="activeRow"
                     :allocationValidationCallback="props.allocationValidationCallback"
                     @delete="(allocToDelete) => emit('delete', allocToDelete)"
                     @edit="(allocToEdit) => emit('edit', allocToEdit)"

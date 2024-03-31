@@ -4,9 +4,7 @@ import { defineConfig } from 'vite'
 
 // https://github.com/temporalio/ui/blob/main/vitest.config.ts
 export default defineConfig({
-     plugins: [
-        vue(),
-    ],
+    plugins: [vue()],
     root: '.',
     resolve: {
         alias: {
@@ -14,8 +12,8 @@ export default defineConfig({
             '~test': path.resolve(__dirname, 'test'),
         },
     },
-    test: {
-        globals: true,
-        environment: 'jsdom',
-    },
+    // test: {
+    //     globals: true,
+    //     environment: 'jsdom',
+    // },
 })

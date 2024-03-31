@@ -20,7 +20,6 @@ export class Resource {
         // bufferMinutes: number = 0, allowCollision: boolean = false,
         // this._bufferMinutes = bufferMinutes
         // this._allowCollision = allowCollision
-        
     }
 
     public id(): string {
@@ -49,9 +48,9 @@ export class Resource {
 
     /**
      * remove allocation from the resource
-     * @param alloc 
+     * @param alloc
      */
-    public removeAllocation(alloc: Allocation):boolean {
+    public removeAllocation(alloc: Allocation): boolean {
         let index = this._allocations.indexOf(alloc)
         let removed = false
         if (index !== -1) {
@@ -75,19 +74,18 @@ export class Resource {
 
     /**
      * add allocation to the resource, also check for collision
-     * @param alloc 
-     * @returns 
+     * @param alloc
+     * @returns
      */
-    public addAllocation(alloc: Allocation):boolean {
+    public addAllocation(alloc: Allocation): boolean {
         // if alloc is already in the list, then we can skip the collision check
         if (this._allocations.indexOf(alloc) !== -1) {
             return false
         }
-        
+
         // compute all collisions
         for (let i = 0; i < this._allocations.length; i++) {
-            if (this._allocations && alloc.allowCollide() && 
-                this._allocations[i].allowCollide()) {
+            if (this._allocations && alloc.allowCollide() && this._allocations[i].allowCollide()) {
                 // if both allocations allow collision, then we can skip the collision check
                 continue
             }
@@ -97,7 +95,7 @@ export class Resource {
                 this._collisions.push(new CollidedAllocation(this._allocations[i], alloc))
             }
         }
-        
+
         this._allocations.push(alloc)
         return true
     }

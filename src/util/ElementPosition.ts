@@ -22,7 +22,7 @@ export class ElementPosition {
     public y(): number {
         return this._y
     }
-    
+
     public setY(y: number) {
         this._y = y
     }

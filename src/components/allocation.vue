@@ -11,13 +11,13 @@ import { AllocationPosition } from '~/model/AllocationPosition.ts'
 import { TimeTableVM } from '~/view-model/TimeTableVM.ts'
 
 let props = defineProps<{
-    minAllocMinutes: number,
-    maxAllocMinutes: number,
-    allocationValidationCallback: (alloc: Allocation) => boolean,
+    minAllocMinutes: number
+    maxAllocMinutes: number
+    allocationValidationCallback: (alloc: Allocation) => boolean
 }>()
 
-const alloc = defineModel("alloc", { required: true, type: Allocation })
-const activeRow = defineModel("activeRow", { required: true, type: Number })
+const alloc = defineModel('alloc', { required: true, type: Allocation })
+const activeRow = defineModel('activeRow', { required: true, type: Number })
 
 const emit = defineEmits<{
     (e: 'delete', alloc: Allocation): void
@@ -26,12 +26,14 @@ const emit = defineEmits<{
 
 // ==== view data ====
 const showInfoBox = ref(false)
-const time_table:TimeTableVM = inject('time_table') as TimeTableVM
+const time_table: TimeTableVM = inject('time_table') as TimeTableVM
 
 const minWidth = time_table.getCellWidth(props.minAllocMinutes)
 const maxWidth = time_table.getCellWidth(props.maxAllocMinutes)
 
-const allocPos = ref(new AllocationPosition(time_table.getResourceIndex(alloc.value.resource()))) as Ref<AllocationPosition>
+const allocPos = ref(
+    new AllocationPosition(time_table.getResourceIndex(alloc.value.resource())),
+) as Ref<AllocationPosition>
 const xMiddleStateValue = ref(allocPos.value.position().x())
 const yMiddleStateValue = ref(allocPos.value.position().y())
 const wMiddleStateValue = ref(allocPos.value.width())
@@ -54,8 +56,8 @@ const xBoundToMovable = computed({
     },
     set(newValue) {
         xMiddleStateValue.value = newValue
-        allocPos.value.position().setX( newValue )
-    }
+        allocPos.value.position().setX(newValue)
+    },
 })
 
 const yBoundToMovable = computed({
@@ -64,8 +66,8 @@ const yBoundToMovable = computed({
     },
     set(newValue) {
         yMiddleStateValue.value = newValue
-        allocPos.value.position().setY( newValue )
-    }
+        allocPos.value.position().setY(newValue)
+    },
 })
 
 const width = computed({
@@ -74,8 +76,8 @@ const width = computed({
     },
     set(newValue) {
         wMiddleStateValue.value = newValue
-        allocPos.value.setWidth( newValue )
-    }
+        allocPos.value.setWidth(newValue)
+    },
 })
 
 let posBeforeEdit = allocPos.value.copy()
@@ -85,14 +87,13 @@ watch([hasCollision, isValid], () => {
     allocBoxStyle.value = getAllocationResizableBoxStyle(hasCollision.value, isValid.value, alloc.value.color())
 })
 
-watch([
-        () => alloc.value.timeRange(), 
-        () => alloc.value.timeRange().start(), 
-        () => alloc.value.timeRange().end(),
-    ], () => {
+watch(
+    [() => alloc.value.timeRange(), () => alloc.value.timeRange().start(), () => alloc.value.timeRange().end()],
+    () => {
         allocPos.value.calculatePosition(alloc.value, time_table)
         forceReloadPos()
-})
+    },
+)
 
 // ===== Helper function =====
 function forceReloadPos() {
@@ -106,7 +107,7 @@ function validateChange() {
     if (posBeforeEdit.equals(allocPos.value) && width.value == posBeforeEdit.width()) {
         return
     }
-    
+
     if (width.value > maxWidth) {
         if (posBeforeEdit.width() == maxWidth) {
             xBoundToMovable.value = posBeforeEdit.position().x()
@@ -119,11 +120,12 @@ function validateChange() {
         width.value = maxWidth
     }
 
-    if (allocPos.value.position().x() < time_table.minX() ||
+    if (
+        allocPos.value.position().x() < time_table.minX() ||
         allocPos.value.position().x() + allocPos.value.width() > time_table.maxX() ||
         allocPos.value.position().y() < time_table.minY() ||
         allocPos.value.position().y() + 30 > time_table.maxY()
-        ) {
+    ) {
         allocPos.value = posBeforeEdit
     } else {
         try {
@@ -182,19 +184,18 @@ function onResizeStart() {
     posBeforeEdit = allocPos.value.copy()
 }
 
-function onResizing() {
-}
+function onResizing() {}
 
 function onResizeEnd() {
     validateChange()
     showInfoBox.value = true
 }
 
-function deleteAlloc(){
+function deleteAlloc() {
     emit('delete', alloc.value)
 }
 
-function editAlloc(){
+function editAlloc() {
     emit('edit', alloc.value)
 }
 
@@ -206,31 +207,25 @@ function onContextMenu(e: MouseEvent) {
         x: e.x,
         y: e.y,
         items: [
-            { 
-                label: "Edit", 
+            {
+                label: 'Edit',
                 onClick: () => {
                     editAlloc()
-                }
+                },
             },
-            { 
-                label: "Delete", 
+            {
+                label: 'Delete',
                 onClick: () => {
                     deleteAlloc()
-                }
+                },
             },
-        ]
+        ],
     })
-  }
-
+}
 </script>
 <template>
     <div>
-        <AllocationSummary 
-            v-if="showInfoBox" 
-            :alloc="alloc"
-            :allocPos="allocPos"
-            :tableMaxX="time_table.maxX()"
-        />
+        <AllocationSummary v-if="showInfoBox" :alloc="alloc" :allocPos="allocPos" :tableMaxX="time_table.maxX()" />
         <!-- a div that can be resized horizontally -->
         <!-- @contextmenu.prevent="onRightClick" -->
         <Vue3DraggableResizable
@@ -253,7 +248,8 @@ function onContextMenu(e: MouseEvent) {
             @dragging="onDragging"
             @resizing="onResizing"
             @drag-end="onDragEnd"
-            @resize-end="onResizeEnd">
+            @resize-end="onResizeEnd"
+        >
             <div class="allocation-name">
                 {{ alloc.name() }}
             </div>

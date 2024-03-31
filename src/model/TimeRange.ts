@@ -1,13 +1,13 @@
-import { AllocTimeColLabel } from "~/types/common-type"
-import { DateUtil } from "~/util/DateUtil"
-import { StringUtil } from "~/util/StringUtil"
+import { AllocTimeColLabel } from '~/types/common-type'
+import { DateUtil } from '~/util/DateUtil'
+import { StringUtil } from '~/util/StringUtil'
 
 export class TimeRange {
-    private  _start: Date
-    private  _end: Date
+    private _start: Date
+    private _end: Date
 
     /**
-     * 
+     *
      * @param start date time
      * @param end date time
      */
@@ -18,8 +18,8 @@ export class TimeRange {
 
     /**
      * check if a given date)time is within the time range
-     * @param date_time 
-     * @returns 
+     * @param date_time
+     * @returns
      */
     contains(date_time: Date): boolean {
         return date_time >= this._start && date_time <= this._end
@@ -27,17 +27,22 @@ export class TimeRange {
 
     /**
      * check if a given time range overlaps with this time range
-     * 
-     * @param timeRange 
-     * @returns 
+     *
+     * @param timeRange
+     * @returns
      */
     overlapTimeRange(timeRange: TimeRange): boolean {
-        return this.contains(timeRange._start) || this.contains(timeRange._end) || timeRange.contains(this._start) || timeRange.contains(this._end)
+        return (
+            this.contains(timeRange._start) ||
+            this.contains(timeRange._end) ||
+            timeRange.contains(this._start) ||
+            timeRange.contains(this._end)
+        )
     }
 
     /**
      * Checks if a given time range is completely within this time range.
-     * 
+     *
      * @param timeRange - The time range to check.
      * @returns `true` if the given time range is completely within this time range, `false` otherwise.
      */
@@ -55,7 +60,7 @@ export class TimeRange {
 
     /**
      * create a copy of the time range
-     * @returns 
+     * @returns
      */
     copy(): TimeRange {
         return new TimeRange(new Date(this._start), new Date(this._end))
@@ -86,7 +91,6 @@ export class TimeRange {
         let currentDate = new Date(this._start)
         let lastDate: null | Date = null
 
-        
         while (currentDate <= this._end) {
             if (lastDate && lastDate.getDate() !== currentDate.getDate()) {
                 result.push([DateUtil.formatDate(lastDate, date_format), lastDate.getHours().toString()])
@@ -98,7 +102,6 @@ export class TimeRange {
         return result
     }
 
-   
     /**
      * each row has a hash with the date and hours key,
      * where hours is array of hour of that date
@@ -114,8 +117,8 @@ export class TimeRange {
                 hours = []
             }
             lastDate = new Date(currentDate)
-            const h:number = lastDate.getHours()
-            const hh:string = StringUtil.padLeadingZeroForSingleDigit(h)
+            const h: number = lastDate.getHours()
+            const hh: string = StringUtil.padLeadingZeroForSingleDigit(h)
             hours.push(hh)
             currentDate.setHours(currentDate.getHours() + 1)
         }

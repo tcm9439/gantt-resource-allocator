@@ -1,9 +1,8 @@
 import { Resource } from './Resource'
 import { TimeRange } from './TimeRange'
-import { TimeColumnLabel } from '~/view-model/TimeColumnLabel';
+import { TimeColumnLabel } from '~/view-model/TimeColumnLabel'
 
 import { ResourceRowLabel } from '~/types/common-type'
-
 
 // TimeTable formerly AllocTimeTable
 
@@ -18,7 +17,7 @@ export class TimeTable {
     private _resources: Array<Resource> = []
     /**
      * the time range of the time table
-     * the time range is the time range of the time table, 
+     * the time range is the time range of the time table,
      * for the Columns of the time table
      */
     private _timeRange: TimeRange
@@ -33,7 +32,6 @@ export class TimeTable {
         this._minutePrecision = minutePrecision || 5
     }
 
-
     public timeRange(): TimeRange {
         return this._timeRange
     }
@@ -46,57 +44,54 @@ export class TimeTable {
         return this._resources
     }
 
-
-
     /**
      * return all the resources label in the time table
-     * array of [ 
+     * array of [
      *   {
-     *      vKey: string, 
-     *      label: string, 
+     *      vKey: string,
+     *      label: string,
      *      index: number
      *   }
      * ]
      * vKey is the unique key for the resource (resource id)
      * label is the name of the resource (resource name)
-     * @returns 
+     * @returns
      */
     public getResourceRowLabel(): Array<ResourceRowLabel> {
         let result: Array<ResourceRowLabel> = []
         for (let i = 0; i < this._resources.length; i++) {
-            result.push({ 
-                vKey: this._resources[i].id(), 
-                label: this._resources[i].name(), 
-                index: i })
+            result.push({
+                vKey: this._resources[i].id(),
+                label: this._resources[i].name(),
+                index: i,
+            })
         }
         return result
     }
-
 
     public getResourceByIndex(index: number): Resource {
         return this._resources[index]
     }
 
-
     /**
      * return the (row) index of the resource in the time table
-     * @param resource 
-     * @returns 
+     * @param resource
+     * @returns
      */
     public getResourceIndex(resource: Resource | undefined): number {
         if (!resource) {
             return 0
         }
-        return this._resources.indexOf(resource) 
+        return this._resources.indexOf(resource)
     }
 
     private _time_column_label?: TimeColumnLabel
     /**
      * get column labels based on the time range.
-     * 
+     *
      * first find the (date, hours) tuple in the time range,
      * the return the column label for the time table
-     * @returns 
+     * @returns
      */
     public getTableColumnLabel(): TimeColumnLabel {
         //let result: Array<AllocTimeColLabel> = []
@@ -126,7 +121,7 @@ export class TimeTable {
 
     /**
      * the number of time columns in the time table
-     * @returns 
+     * @returns
      */
     public timeColumnCount(): number {
         if (!this._time_column_label) {
@@ -134,7 +129,4 @@ export class TimeTable {
         }
         return this._time_column_label?.getTotalNumberOfTimeColumns() || 0
     }
-
-  
-
 }

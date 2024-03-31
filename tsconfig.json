@@ -3,11 +3,7 @@
         "target": "ES2020",
         "useDefineForClassFields": true,
         "module": "ESNext",
-        "lib": [
-            "ES2020",
-            "DOM",
-            "DOM.Iterable"
-        ],
+        "lib": ["ES2020", "DOM", "DOM.Iterable"],
         "skipLibCheck": true,
         "outDir": "dist",
         "declaration": true,
@@ -24,32 +20,15 @@
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
         "paths": {
-            "~": [
-                "./src/"
-            ],
-            "~/*": [
-                "./src/*"
-            ],
-            "assets": [
-                "./assets"
-            ],
-            "public": [
-                "./public"
-            ],
-            "public/*": [
-                "./public/*"
-            ],
-            "#components": [
-                "./components"
-            ]
+            "~": ["./src/"],
+            "~/*": ["./src/*"],
+            "assets": ["./assets"],
+            "public": ["./public"],
+            "public/*": ["./public/*"],
+            "#components": ["./components"]
         }
     },
-    "include": [
-        "src/**/*.ts",
-        "src/**/*.tsx",
-        "src/**/*.vue",
-        "test/**/*.ts",
-    ],
+    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "test/**/*.ts"],
     "references": [
         {
             "path": "./tsconfig.node.json"

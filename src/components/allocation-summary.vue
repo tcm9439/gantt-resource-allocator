@@ -5,9 +5,9 @@ import { Allocation } from '~/model/Allocation.ts'
 import { AllocationPosition } from '~/model/AllocationPosition.ts'
 
 let props = defineProps<{
-    alloc: Allocation,
-    allocPos: AllocationPosition,
-    tableMaxX: number,
+    alloc: Allocation
+    allocPos: AllocationPosition
+    tableMaxX: number
 }>()
 
 const infoWidth = 150
@@ -39,15 +39,8 @@ let endTimeDisplay = computed(() => {
 </script>
 
 <template>
-    <Vue3DraggableResizable
-        class="allocation-info-box"
-        :x="infoX"
-        :y="infoY"
-        :draggable="false"
-        :resizable="false">
-        <div>
-            {{ startTimeDisplay }} - {{ endTimeDisplay }}
-        </div>
+    <Vue3DraggableResizable class="allocation-info-box" :x="infoX" :y="infoY" :draggable="false" :resizable="false">
+        <div>{{ startTimeDisplay }} - {{ endTimeDisplay }}</div>
     </Vue3DraggableResizable>
 </template>
 

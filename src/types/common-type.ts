@@ -1,11 +1,11 @@
 export type AllocTimeColLabel = {
-    date: string,
+    date: string
     hours: Array<string>
 }
 
 export type ResourceRowLabel = {
-    vKey: string,
-    label: string,
+    vKey: string
+    label: string
     index: number
 }
 
@@ -13,24 +13,24 @@ export type ResourceRowLabel = {
  * header has 3 rows, one for date, one for hour, one for minute
  */
 export type DateColumnLabel = {
-    vKey: string, 
-    label: string, 
+    vKey: string
+    label: string
     colSpan: number
 }
 
 export type HourColumnLabel = {
-    vKey: string, 
+    vKey: string
     label: string
 }
 
 export type MinuteColumnLabel = {
-    vKey: string, 
+    vKey: string
     label: string
 }
 
 export type HtmlElementBoundingRect = {
-    x: number,
-    y: number,
-    width: number,
+    x: number
+    y: number
+    width: number
     height: number
 }

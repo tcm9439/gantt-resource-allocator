@@ -16,9 +16,9 @@ export class CollidedAllocation {
     }
 
     /**
-     * 
-     * @param alloc 
-     * @returns 
+     *
+     * @param alloc
+     * @returns
      */
     public includes(alloc: Allocation): boolean {
         return this._allocationA === alloc || this._allocationB === alloc
@@ -26,7 +26,7 @@ export class CollidedAllocation {
 
     /**
      * return the two allocations that collided
-     * @returns 
+     * @returns
      */
     public allocations(): Allocation[] {
         return [this._allocationA, this._allocationB]
@@ -43,7 +43,7 @@ export class CollidedAllocation {
 
     /**
      * check if the collision was removed
-     * @returns 
+     * @returns
      */
     public collisionRemoved(): boolean {
         return this._collision_removed

@@ -4,7 +4,7 @@ import { TimeTableVM } from '~/view-model/TimeTableVM.ts'
 
 let props = defineProps<{
     // allocTimeTable: AllocTimeTable,
-    timelineColor: string,
+    timelineColor: string
 }>()
 
 const time_table = inject('time_table') as TimeTableVM
@@ -27,7 +27,7 @@ const lineStyle = ref({
     borderLeft: `2px solid ${props.timelineColor}`,
 })
 
-function calculateXByCurrentTime(){
+function calculateXByCurrentTime() {
     let inRange = checkCurrentTimeInRange()
     if (inRange) {
         let lineX = Math.round(time_table.getCellX(currentTime))
@@ -64,12 +64,10 @@ time_table.registerOnReadyListener(() => {
     fireRefresh()
 })
 
-
 onMounted(() => {
     calculateXByCurrentTime()
-   
-    fireRefresh()
 
+    fireRefresh()
 })
 
 onUnmounted(() => {
@@ -77,13 +75,10 @@ onUnmounted(() => {
         clearTimeout(timeoutID)
     }
 })
-
 </script>
 
 <template>
-    <div v-if="currentTimeInRange"
-        class="allocation-timetable-now-line" :style="lineStyle" >
-    </div>
+    <div v-if="currentTimeInRange" class="allocation-timetable-now-line" :style="lineStyle"></div>
 </template>
 
 <style scoped>
