@@ -17,6 +17,7 @@
         "dev": "vite",
         "test": "vitest --run --globals --config ./vitest.config.js",
         "build": "vite build && vue-tsc --emitDeclarationOnly --project tsconfig-build.json && tsc-alias -p tsconfig-build.json",
+        "build-demo": "vite build --config vite.demo.config.js",
         "lint": "eslint . --ext .ts,.tsx",
         "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json,vue}\""
     },
