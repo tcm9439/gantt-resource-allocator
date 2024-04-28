@@ -46,5 +46,18 @@
         "vite": "^5.1.6",
         "vitest": "^1.4.0",
         "vue-tsc": "^1.8.27"
+    },
+    "keywords": [
+        "vue3",
+        "vue",
+        "gantt",
+        "resource allocation",
+        "draggable",
+        "resizable"
+    ],
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tcm9439/gantt-resource-allocator.git"
     }
 }
