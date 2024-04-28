@@ -6,7 +6,7 @@ import { Allocation } from '~/model/Allocation'
 import { AllocationColor } from '~/util/AllocationColor'
 import { TimeRange } from '~/model/TimeRange'
 
-const laterals = ref([
+const resource = ref([
     new Resource('1', '01A'),
     new Resource('2', '02A'),
     new Resource('3', '03A'),
@@ -45,49 +45,49 @@ const allocations: Ref<Array<Allocation>> = ref([
         'Example 1',
         new TimeRange(getDateTime(-1, 23, 15), getDateTime(0, 1, 45)),
         AllocationColor.ORANGE,
-    ).setResource(laterals.value[0]),
+    ).setResource(resource.value[0]),
     Allocation.create(
         '2',
         'Example 2',
         new TimeRange(getDateTime(0, 3, 20), getDateTime(0, 4, 30)),
         AllocationColor.BLUE,
-    ).setResource(laterals.value[1]),
+    ).setResource(resource.value[1]),
     Allocation.create(
         '3',
         'Example 3',
         new TimeRange(getDateTime(0, 14, 40), getDateTime(0, 16, 40)),
         AllocationColor.YELLOW,
-    ).setResource(laterals.value[2]),
+    ).setResource(resource.value[2]),
     Allocation.create(
         '4',
         'Example 4',
         new TimeRange(getDateTime(0, 8, 30), getDateTime(0, 9, 35)),
         AllocationColor.PURPLE,
-    ).setResource(laterals.value[3]),
+    ).setResource(resource.value[3]),
     Allocation.create(
         '5',
         'Example 5',
         new TimeRange(getDateTime(0, 17, 20), getDateTime(0, 18, 45)),
         AllocationColor.ORANGE,
-    ).setResource(laterals.value[4]),
+    ).setResource(resource.value[4]),
     Allocation.create(
         '6',
         'Example 6',
         new TimeRange(getDateTime(0, 9, 30), getDateTime(0, 11, 15)),
         AllocationColor.RED,
-    ).setResource(laterals.value[5]),
+    ).setResource(resource.value[5]),
     Allocation.create(
         '7',
         'Example 7',
         new TimeRange(getDateTime(0, 2, 10), getDateTime(0, 3, 20)),
         AllocationColor.ORANGE,
-    ).setResource(laterals.value[6]),
+    ).setResource(resource.value[6]),
     Allocation.create(
         '8',
         'Example 8',
         new TimeRange(getDateTime(0, 9, 20), getDateTime(0, 10, 25)),
         AllocationColor.BLUE,
-    ).setResource(laterals.value[7]),
+    ).setResource(resource.value[7]),
 ]) as Ref<Array<Allocation>>
 
 const allocTimeTableStartTime = getDateTime(-1, 23, 0)
@@ -158,10 +158,35 @@ function allocValidation(alloc: Allocation): boolean {
 </script>
 
 <template>
-    <h1>TESTING PAGE</h1>
+    <h1>Gantt Resource Allocator - Demo Page</h1>
+    <div>
+        <ul>
+            <li>The allocation can be dragged and resized.</li>
+            <li>
+                Click on an allocation to see its time span in text. Right click on an allocation to trigger edit or
+                delete UI. (The UI is implemented in this demo page but not in the component itself. The component only
+                expose a callback to notify the edit/delete event.)
+            </li>
+            <li>
+                Time Range: Yesterday 23:00 to Tomorrow 01:59. The allocation cannot be dragged outside this range. (But
+                if user edit the Allocation object attribute, it is not checked.)
+            </li>
+            <li>Resource: 01A to 23A</li>
+            <li>
+                Each allocation should be at least 60 minutes and at most 180 minutes. So user is only allowed to resize
+                the allocation box within this range. (But if user edit the Allocation object attribute, it is not
+                checked.)
+            </li>
+            <li>The box style is changed if two or more allocations are overlapped.</li>
+            <li>
+                The text of the allocation name becomes red if the allocation is invalid according to the validation
+                rule provided. (In this demo, allocation 1 cannot start after 02:15.)
+            </li>
+        </ul>
+    </div>
     <div class="table-wrapper">
         <ResourceAllocator
-            :resources="laterals"
+            :resources="resource"
             :allocations="allocations"
             :timetableStartTime="allocTimeTableStartTime"
             :timetableEndTime="allocTimeTableEndTime"
@@ -192,6 +217,10 @@ function allocValidation(alloc: Allocation): boolean {
 </template>
 
 <style scoped>
+h1 {
+    text-align: center;
+}
+
 .table-wrapper {
     width: 90vw;
     /* center the table */

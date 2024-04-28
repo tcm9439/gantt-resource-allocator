@@ -17,7 +17,7 @@ const lineY = time_table.rowOffset()
 // fixed, relative to the header height & table height
 const height = time_table.maxY() - time_table.rowOffset()
 const currentTimeInRange = ref(false)
-let timeoutID: number | null = null
+let timeoutID: ReturnType<typeof setTimeout> | null = null
 let currentTime = new Date()
 
 const lineStyle = ref({

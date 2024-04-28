@@ -16,7 +16,6 @@ export class TimeTable {
      */
     private _resources: Array<Resource> = []
     /**
-     * the time range of the time table
      * the time range is the time range of the time table,
      * for the Columns of the time table
      */

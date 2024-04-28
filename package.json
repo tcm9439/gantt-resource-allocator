@@ -16,7 +16,7 @@
     "scripts": {
         "dev": "vite",
         "test": "vitest --run --globals --config ./vitest.config.js",
-        "build": "vite build && vue-tsc --emitDeclarationOnly --project tsconfig-build.json",
+        "build": "vite build && vue-tsc --emitDeclarationOnly --project tsconfig-build.json && tsc-alias -p tsconfig-build.json",
         "lint": "eslint . --ext .ts,.tsx",
         "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json,vue}\""
     },
@@ -40,6 +40,7 @@
         "less": "^4.2.0",
         "less-loader": "^12.2.0",
         "prettier": "^3.2.5",
+        "tsc-alias": "^1.8.8",
         "typescript": "^5.2.2",
         "vite": "^5.1.6",
         "vitest": "^1.4.0",
